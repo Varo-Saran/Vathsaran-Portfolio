@@ -1112,3 +1112,26 @@ function validateForm(form) {
 
 // Scroll event listener
 window.addEventListener('scroll', debounce(handleScrollAnimation));
+
+function toggleChatbot() {
+  const chatbot = document.querySelector('.chatbot');
+  if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+    chatbot.style.display = 'flex';
+    chatbot.classList.add('opening');
+    chatbot.classList.remove('closing');
+  } else {
+    chatbot.classList.add('closing');
+    chatbot.classList.remove('opening');
+    setTimeout(() => {
+      chatbot.style.display = 'none';
+    }, 300); // Match this to the animation duration
+  }
+}
+
+// Ensure the chat messages scroll to the bottom when new messages are added
+function scrollChatToBottom() {
+  const chatMessages = document.querySelector('.chat-messages');
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Call this function whenever a new message is added
