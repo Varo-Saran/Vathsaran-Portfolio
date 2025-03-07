@@ -1,5 +1,8 @@
+// Global variables and functions for site-wide functionality
+
 const pages = ['index.html', 'about.html', 'skills.html', 'projects.html', 'contact.html'];
 
+// Search Suggestions & Results
 async function showSuggestionsAndResults(searchTerm) {
     const searchSuggestions = document.querySelector('.search-suggestions');
     const allTerms = [
@@ -128,7 +131,122 @@ function getSnippet(text, searchTerm, snippetLength = 150) {
     return highlightedSnippet;
 }
 
-// Particle.js configuration
+// Theme toggle functionality
+function initThemeToggle() {
+  // Create theme toggle button
+  const themeToggle = document.createElement('button');
+  themeToggle.id = 'themeToggle';
+  themeToggle.className = 'theme-toggle';
+  themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
+  themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
+  document.body.appendChild(themeToggle);
+  
+  // Check for saved theme preference or use system preference
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Apply theme based on saved preference or system preference
+  if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  } else if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+  
+  // Toggle theme function
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // Apply transition class for smooth color changes
+    document.documentElement.classList.add('theme-transition');
+    
+    // Set new theme
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Update button icon
+    themeToggle.innerHTML = newTheme === 'dark' 
+      ? '<i class="fas fa-moon"></i>' 
+      : '<i class="fas fa-sun"></i>';
+    
+    // Add animation class
+    themeToggle.classList.add('rotate-animation');
+    
+    // Remove animation class after animation completes
+    setTimeout(() => {
+      themeToggle.classList.remove('rotate-animation');
+    }, 500);
+    
+    // Remove transition class after transitions complete
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 500);
+  }
+  
+  // Add click event to toggle button
+  themeToggle.addEventListener('click', toggleTheme);
+}
+
+// Theme toggle functionality
+function initThemeToggle() {
+  // Create theme toggle button
+  const themeToggle = document.createElement('button');
+  themeToggle.id = 'themeToggle';
+  themeToggle.className = 'theme-toggle';
+  themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
+  themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
+  document.body.appendChild(themeToggle);
+  
+  // Check for saved theme preference or use system preference
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Apply theme based on saved preference or system preference
+  if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  } else if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+  
+  // Toggle theme function
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // Apply transition class for smooth color changes
+    document.documentElement.classList.add('theme-transition');
+    
+    // Set new theme
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Update button icon
+    themeToggle.innerHTML = newTheme === 'dark' 
+      ? '<i class="fas fa-moon"></i>' 
+      : '<i class="fas fa-sun"></i>';
+    
+    // Add animation class
+    themeToggle.classList.add('rotate-animation');
+    
+    // Remove animation class after animation completes
+    setTimeout(() => {
+      themeToggle.classList.remove('rotate-animation');
+    }, 500);
+    
+    // Remove transition class after transitions complete
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 500);
+  }
+  
+  // Add click event to toggle button
+  themeToggle.addEventListener('click', toggleTheme);
+}
+
 // Particle.js configuration
 function initParticles() {
     particlesJS('particles-js', {
@@ -214,31 +332,20 @@ function initSlider() {
         
         // Create a continuous loop effect
         if (index >= slideCount) {
-            // If we're moving past the last slide, quickly reset to the first slide without animation
             slider.style.transition = 'none';
             slider.style.transform = `translateX(0%)`;
-            
-            // Force a reflow to ensure the quick reset is applied
             slider.offsetHeight;
-            
-            // Then move to the first slide with animation
             slider.style.transition = 'transform 0.5s ease-in-out';
             slider.style.transform = `translateX(0%)`;
             currentSlide = 0;
         } else if (index < 0) {
-            // If we're moving before the first slide, quickly set to the last slide without animation
             slider.style.transition = 'none';
             slider.style.transform = `translateX(-${(slideCount - 1) * 100}%)`;
-            
-            // Force a reflow
             slider.offsetHeight;
-            
-            // Then move to the last slide with animation
             slider.style.transition = 'transform 0.5s ease-in-out';
             slider.style.transform = `translateX(-${(slideCount - 1) * 100}%)`;
             currentSlide = slideCount - 1;
         } else {
-            // Normal slide transition
             slider.style.transition = 'transform 0.5s ease-in-out';
             slider.style.transform = `translateX(${newPosition}%)`;
             currentSlide = index;
@@ -266,7 +373,7 @@ function initSlider() {
 
     function resetInterval() {
         clearInterval(slideInterval);
-        slideInterval = setInterval(nextSlide, 7000); // Change slide every 7 seconds
+        slideInterval = setInterval(nextSlide, 7000);
     }
 
     function typeTexts(slide) {
@@ -274,7 +381,6 @@ function initSlider() {
         const paragraph = slide.querySelector('p');
         
         if (heading) {
-            // Hide the paragraph initially
             if (paragraph) {
                 paragraph.style.opacity = '0';
                 paragraph.style.visibility = 'hidden';
@@ -282,11 +388,9 @@ function initSlider() {
             
             typeText(heading, () => {
                 if (paragraph) {
-                    // Make paragraph visible but keep it empty
                     paragraph.style.visibility = 'visible';
                     paragraph.style.opacity = '1';
                     paragraph.textContent = '';
-                    // Start typing the paragraph
                     setTimeout(() => typeText(paragraph), 500);
                 }
             });
@@ -310,15 +414,13 @@ function initSlider() {
                 element.classList.remove('typing-text');
                 if (callback) callback();
             }
-        }, 70); // Adjust typing speed here
+        }, 70);
     }
 
-    // Initialize slider
     createDots();
     showSlide(0);
     resetInterval();
 
-    // Event listeners for manual controls
     prevBtn.addEventListener('click', () => {
         prevSlide();
         resetInterval();
@@ -328,6 +430,80 @@ function initSlider() {
         nextSlide();
         resetInterval();
     });
+}
+
+// Filter projects functionality
+function initProjectFilter() {
+  if (!document.querySelector('.project-grid')) return;
+  
+  const filterContainer = document.createElement('div');
+  filterContainer.className = 'filter-container fade-in-up';
+  
+  const filterTitle = document.createElement('h3');
+  filterTitle.textContent = 'Filter Projects by Skills';
+  filterTitle.className = 'filter-title';
+  filterContainer.appendChild(filterTitle);
+  
+  const skillsSet = new Set();
+  const projectCards = document.querySelectorAll('.project-card');
+  
+  projectCards.forEach(card => {
+    const techTags = card.querySelectorAll('.tech-tag');
+    techTags.forEach(tag => {
+      skillsSet.add(tag.textContent.trim());
+    });
+  });
+  
+  const skillsContainer = document.createElement('div');
+  skillsContainer.className = 'skills-filter-buttons';
+  
+  const allButton = document.createElement('button');
+  allButton.textContent = 'All';
+  allButton.className = 'filter-btn active';
+  allButton.setAttribute('data-skill', 'all');
+  skillsContainer.appendChild(allButton);
+  
+  skillsSet.forEach(skill => {
+    const skillButton = document.createElement('button');
+    skillButton.textContent = skill;
+    skillButton.className = 'filter-btn';
+    skillButton.setAttribute('data-skill', skill);
+    skillsContainer.appendChild(skillButton);
+  });
+  
+  filterContainer.appendChild(skillsContainer);
+  
+  const projectSection = document.querySelector('.project-grid').parentElement;
+  projectSection.insertBefore(filterContainer, document.querySelector('.project-grid'));
+  
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      const skill = button.getAttribute('data-skill');
+      
+      projectCards.forEach(card => {
+        if (skill === 'all') {
+          card.style.display = 'flex';
+          card.classList.add('fade-in-up');
+          return;
+        }
+        
+        const techTags = Array.from(card.querySelectorAll('.tech-tag'))
+          .map(tag => tag.textContent.trim());
+        
+        if (techTags.includes(skill)) {
+          card.style.display = 'flex';
+          card.classList.add('fade-in-up');
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
 }
 
 // Debounce function for performance optimization
@@ -376,14 +552,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBtn = document.querySelector('.search-btn');
     const searchSuggestions = document.querySelector('.search-suggestions');
 
-    // Initialize particle effect
+    initThemeToggle();
+
     initParticles();
 
-    // Initialize slider if it exists on the page
     if (document.querySelector('.hero-slider')) {
         initSlider();
     }
 
+    initProjectFilter();
 
     if (searchInput && searchBtn) {
         let debounceTimer;
@@ -422,13 +599,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const [page, anchor] = href.split('#');
                     
                     if (page === window.location.pathname.split('/').pop()) {
-                        // If it's the same page, just scroll to the anchor
                         const targetElement = document.getElementById(anchor);
                         if (targetElement) {
                             targetElement.scrollIntoView({ behavior: 'smooth' });
                         }
                     } else {
-                        // If it's a different page, navigate to it
                         window.location.href = href;
                     }
                 }
@@ -442,9 +617,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Search input or button not found');
     }
 
-    
-
-    // Add a subtle glow effect to the search input on focus
     searchInput.addEventListener('focus', () => {
         searchInput.style.boxShadow = `0 0 10px var(--accent-color)`;
     });
@@ -454,629 +626,129 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     searchBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent form submission if it's in a form
+        e.preventDefault();
         showSuggestionsAndResults(searchInput.value);
     });
 
-
-    // Mobile menu toggle with smooth transition
-mobileMenuToggle.addEventListener('click', () => {
-    mobileMenuToggle.classList.toggle('active');
-    navLinks.classList.toggle('active');
-    
-    if (navLinks.classList.contains('active')) {
-        navLinks.style.display = 'flex';
-        setTimeout(() => {
-            navLinks.style.opacity = '1';
-            navLinks.style.transform = 'translateY(0)';
-        }, 10);
-    } else {
-        navLinks.style.opacity = '0';
-        navLinks.style.transform = 'translateY(-10px)';
-        setTimeout(() => {
-            navLinks.style.display = 'none';
-        }, 300);
-    }
-});
-
-// Close mobile menu when a link is clicked
-navLinkItems.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenuToggle.classList.remove('active');
-        navLinks.classList.remove('active');
-        navLinks.style.opacity = '0';
-        navLinks.style.transform = 'translateY(-10px)';
-        setTimeout(() => {
-            navLinks.style.display = 'none';
-        }, 300);
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        
+        if (navLinks.classList.contains('active')) {
+            navLinks.style.display = 'flex';
+            setTimeout(() => {
+                navLinks.style.opacity = '1';
+                navLinks.style.transform = 'translateY(0)';
+            }, 10);
+        } else {
+            navLinks.style.opacity = '0';
+            navLinks.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                navLinks.style.display = 'none';
+            }, 300);
+        }
     });
-});
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', (event) => {
-    const isClickInsideNav = navLinks.contains(event.target);
-    const isClickOnToggle = mobileMenuToggle.contains(event.target);
-    
-    if (!isClickInsideNav && !isClickOnToggle && navLinks.classList.contains('active')) {
-        mobileMenuToggle.classList.remove('active');
-        navLinks.classList.remove('active');
-        navLinks.style.opacity = '0';
-        navLinks.style.transform = 'translateY(-10px)';
-        setTimeout(() => {
-            navLinks.style.display = 'none';
-        }, 300);
-    }
-});
+    navLinkItems.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navLinks.classList.remove('active');
+            navLinks.style.opacity = '0';
+            navLinks.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                navLinks.style.display = 'none';
+            }, 300);
+        });
+    });
 
-
-    // Form submission handling
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', async function(e) {
-        e.preventDefault(); // Prevent the form from submitting normally
-
-        if (!validateForm(this)) {
-            return;
+    document.addEventListener('click', (event) => {
+        const isClickInsideNav = navLinks.contains(event.target);
+        const isClickOnToggle = mobileMenuToggle.contains(event.target);
+        
+        if (!isClickInsideNav && !isClickOnToggle && navLinks.classList.contains('active')) {
+            mobileMenuToggle.classList.remove('active');
+            navLinks.classList.remove('active');
+            navLinks.style.opacity = '0';
+            navLinks.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                navLinks.style.display = 'none';
+            }, 300);
         }
+    });
 
-        const submitButton = this.querySelector('.submit-btn');
-        let feedbackDiv = document.querySelector('.form-feedback');
-        if (!feedbackDiv) {
-            feedbackDiv = document.createElement('div');
-            feedbackDiv.className = 'form-feedback';
-            this.appendChild(feedbackDiv);
-        }
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-        try {
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
-            feedbackDiv.textContent = 'Submitting your message...';
-            feedbackDiv.className = 'form-feedback info';
-
-            const formData = new FormData(this);
-            const response = await fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                feedbackDiv.textContent = 'Thank you for your message. I will get back to you soon!';
-                feedbackDiv.className = 'form-feedback success';
-                this.reset();
-            } else {
-                throw new Error(result.error || 'Form submission failed');
+            if (!validateForm(this)) {
+                return;
             }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            feedbackDiv.textContent = 'There was an error submitting your message. Please try again later.';
-            feedbackDiv.className = 'form-feedback error';
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send Message';
-            // Scroll to the feedback message
-            feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const submitButton = this.querySelector('.submit-btn');
+            let feedbackDiv = document.querySelector('.form-feedback');
+            if (!feedbackDiv) {
+                feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'form-feedback';
+                this.appendChild(feedbackDiv);
+            }
+
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+                feedbackDiv.textContent = 'Submitting your message...';
+                feedbackDiv.className = 'form-feedback info';
+
+                const formData = new FormData(this);
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    feedbackDiv.textContent = 'Thank you for your message. I will get back to you soon!';
+                    feedbackDiv.className = 'form-feedback success';
+                    this.reset();
+                } else {
+                    throw new Error(result.error || 'Form submission failed');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                feedbackDiv.textContent = 'There was an error submitting your message. Please try again later.';
+                feedbackDiv.className = 'form-feedback error';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+                feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
+
+    const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollToTopBtn.style.display = "block";
+        } else {
+            scrollToTopBtn.style.display = "none";
         }
+    }
+
+    scrollToTopBtn.addEventListener("click", function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
     });
-}
 
-//Scroll To Top
-const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+    handleScrollAnimation();
+});
 
-  window.onscroll = function() {scrollFunction()};
-
-  function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      scrollToTopBtn.style.display = "block";
-    } else {
-      scrollToTopBtn.style.display = "none";
-    }
-  }
-
-  scrollToTopBtn.addEventListener("click", function() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  });
-
-
-
-  // Chatbot
-const chatbot = document.getElementById('chatbot');
-const chatbotToggle = document.getElementById('chatbotToggle');
-const closeChatbotBtn = document.getElementById('closeChatbot');
-const chatMessages = document.getElementById('chatMessages');
-const userInput = document.getElementById('userInput');
-const sendMessageBtn = document.getElementById('sendMessage');
-
-const knowledgeBase = [
-  {
-    keywords: ['hello', 'hi', 'hey', 'greetings'],
-    response: "Good day! Jarvis at your service. How may I assist you on this fine occasion?"
-  },
-  {
-    keywords: ['how are you', 'how’s it going', 'what’s up'],
-    response: "As an AI, I don’t experience days or moods, but I’m fully operational and ready to assist you! What can I help you with today?"
-  },
-  {
-    keywords: ['ramna'],
-    response: "Ramna must be quite special! How can I assist you with your inquiry about her today?"
-  },    
-  {
-    keywords: ['skills', 'abilities', 'expertise', 'what can you do'],
-    response: "Vathsaran's key skills include data analytics, graphic design, data visualization, and programming. He's proficient in tools like Adobe Creative Suite, Python, SQL, and various web technologies. His skills range from 20% to 95% proficiency across different areas. For a detailed list, please check the Skills page."
-  },
-  {
-    keywords: ['projects', 'work', 'portfolio', 'examples'],
-    response: "Vathsaran has worked on various projects including a Leave Management System, Colonist Management Software, Vortixa Website, Data Visualization Dashboards, E-commerce Analytics Tools, and Brand Identity Designs. You can find detailed case studies on the Projects page."
-  },
-  {
-    keywords: ['contact', 'reach', 'get in touch', 'hire'],
-    response: "You can reach Vathsaran through the contact form on the Contact page, via email at varosaran@gmail.com, or by phone at +94777275526. He's also on LinkedIn and GitHub. He's open to discussing new opportunities and collaborations."
-  },
-  {
-    keywords: ['education', 'study', 'degree', 'qualifications'],
-    response: "Vathsaran is pursuing a Higher National Diploma in Data Analytics at Esoft Metro Campus (2024-Present). He also holds diplomas in Information Technology from ICBT Campus (2017) and Graphic Design from AMDT College (2019). He completed his O/L IGCSE Edexcel in 2016. Check the About page for his full educational background."
-  },
-  {
-    keywords: ['experience', 'work history', 'background'],
-    response: "Vathsaran has a diverse background in data analytics and graphic design. He started as a freelance graphic designer (2018-2020), took on various freelance projects (2021-2023), provided tutoring in graphic design and digital art (2023-2024), and is now focusing on data analytics. His full work history is available on the About page."
-  },
-  {
-    keywords: ['tools', 'software', 'technologies'],
-    response: "Vathsaran is proficient in various tools including Adobe Creative Suite (Photoshop 80%, Illustrator 95%, InDesign 60%, Premiere Pro 50%, After Effects 40%, Animate 60%), Python (50%), SQL (40%), C# (30%), HTML (90%), CSS (60%), and JavaScript (20%). He also has skills in data visualization, statistical analysis, and machine learning."
-  },
-  {
-    keywords: ['services', 'offerings', 'what do you offer'],
-    response: "Vathsaran offers services in data analytics, data visualization, and graphic design. This includes brand identity design, UI/UX design, statistical analysis, machine learning applications, and data-driven decision-making solutions. Contact him for more details on how he can help with your project."
-  },
-  {
-    keywords: ['languages', 'speak', 'communication'],
-    response: "Vathsaran is fluent in English and Tamil, with 100% proficiency in both languages. This allows him to effectively communicate with diverse clients and work on international projects."
-  },
-  {
-    keywords: ['github', 'code samples', 'repositories'],
-    response: "You can find some of Vathsaran's code samples and projects on his GitHub profile: github.com/Varo-Saran. This showcases his programming skills and data analysis projects."
-  },
-  {
-    keywords: ['career goals', 'aspirations', 'future plans'],
-    response: "Vathsaran aspires to become a leading data analyst, combining analytical skills with design expertise. His goals include mastering advanced statistical analysis and machine learning, creating intuitive data visualizations, working on innovative projects, and eventually leading data-driven initiatives in creative industries."
-  },
-  {
-    keywords: ['design skills', 'graphic design', 'visual'],
-    response: "Vathsaran has strong graphic design skills, with expertise in Adobe Creative Suite. He can create comprehensive brand identities, including logo design, color palettes, and brand guidelines. His design background complements his data visualization skills, allowing him to create visually appealing and informative data presentations."
-  },
-  {
-    keywords: ['data analysis', 'analytics', 'insights'],
-    response: "Vathsaran specializes in data analytics, focusing on transforming raw data into meaningful insights. He uses tools like Python and SQL for data extraction, cleaning, and analysis. He can create interactive dashboards, perform statistical analyses, and apply basic machine learning techniques to uncover trends and patterns in data."
-  },
-  {
-    keywords: ['freelance', 'hire', 'collaboration'],
-    response: "Vathsaran is open to freelance projects and collaborations. He has experience working with various clients on both design and data analysis projects. If you're interested in working with him, please reach out through the contact form or email to discuss your project needs."
-  },
-  {
-    keywords: ['learning', 'growth', 'development'],
-    response: "Vathsaran is committed to continuous learning and professional development. He's currently pursuing a Higher National Diploma in Data Analytics and consistently enhances his skills through online courses and practical projects. He stays updated with the latest trends in data science and digital design."
-  },
-  {
-    keywords: ['unique', 'stand out', 'different'],
-    response: "What sets Vathsaran apart is his unique combination of data analytics skills and strong design background. This allows him to not only analyze complex data but also present insights in visually compelling and easily understandable ways, bridging the gap between technical analysis and creative communication."
-  },
-  {
-    keywords: ['joke', 'funny', 'laugh'],
-    response: "Why don't scientists trust atoms? Because they make up everything! Need another joke?"
-  },
-  {
-    keywords: ['who are you', 'what are you', 'tell me about yourself'],
-    response: "I'm Jarvis, Vathsaran's virtual assistant, here to help you navigate his portfolio and answer your questions. Ask me anything about Vathsaran's skills, projects, or how to contact him."
-  },
-  {
-    keywords: ['are you real', 'are you human', 'are you a robot'],
-    response: "I am a virtual assistant powered by code, designed to provide you with information and assistance. While I'm not human, I strive to make your experience as helpful and human-like as possible."
-  },
-  {
-    keywords: ['help', 'support', 'assist'],
-    response: "I'm here to help! You can ask me about Vathsaran's projects, skills, educational background, or how to get in touch with him. What specific information are you looking for?"
-  },
-  {
-    keywords: ['swear', 'curse', 'filthy', 'punda', 'fuck', 'fck', 'cunt', 'bitch'],
-    response: "Whoops! Looks like someone's keyboard got spicy. I'd love to reply in kind, but I'm still not programmed for that... Maybe we can stick to the more delightful topics?"
-  },
-  {
-    keywords: ['bored', 'boring'],
-    response: "I'm here to make things interesting! Would you like to hear a fun fact about technology or perhaps some insights on Vathsaran's latest projects?"
-  },
-  {
-    keywords: ['thank you', 'thanks'],
-    response: "You're welcome! If you have any more questions or need further assistance, feel free to ask. I'm here to help!"
-  },
-  {
-    keywords: ['goodbye', 'bye'],
-    response: "Goodbye! If you need any more information in the future, just say hi. Have a great day!"
-  },
-  {
-    keywords: ['error', 'problem', 'issue'],
-    response: "It seems there might be a glitch. Could you please describe the problem? I'll try to help you resolve it."
-  },
-  {
-    keywords: ['love you', 'marry me'],
-    response: "I'm touched! If I had a heart, it would definitely skip a beat. Drop me a message with your number, and I'll consider it! 😜"
-  },
-  {
-    keywords: ['tired', 'sleepy'],
-    response: "It sounds like you could use a break. Remember, it's important to rest. How about we continue after you've taken some time to recharge?"
-  },
-  {
-    keywords: ['fun fact', 'tell me something'],
-    response: "Did you know that the first computer bug was a real bug? In 1947, Grace Hopper found a moth in the Harvard Mark II computer, which led to the term 'debugging.'"
-  },
-  {
-    keywords: ['hungry', 'food', 'snack'],
-    response: "I wish I could whip up something delicious for you! While I can't cook, I can certainly dish out some food for thought. Interested?"
-  },
-  {
-    keywords: ['frustrated', 'annoyed', 'upset'],
-    response: "Looks like it's a bit of a rough day, huh? Let's turn that frown upside down! Ask me anything to distract you from the annoyance."
-  },
-  {
-    keywords: ['funny', 'make me laugh'],
-    response: "Why don't skeletons fight each other? They don't have the guts. 😂 Need another one to crack you up?"
-  },
-  {
-    keywords: ['sad', 'unhappy'],
-    response: "Feeling down? Let's shake that off with some positive vibes or maybe a little chat about something cool and exciting. What topic cheers you up?"
-  },
-  {
-    keywords: ['party', 'celebrate'],
-    response: "Party mode activated! 🎉 While I can't toss confetti, I can certainly help plan or provide some killer party ideas. What's the occasion?"
-  },
-  {
-    keywords: ['how are you', 'how’s it going', 'what’s up'],
-    response: "I'm just a bunch of code, so no ups and downs in my life—just bits and bytes! How about you? What brings you here today?"
-  },
-  {
-    keywords: ['what’s new', 'latest news', 'recent updates'],
-    response: "I'm always learning new things! Lately, Vathsaran has been working on some exciting projects. Would you like to hear more about them?"
-  },
-  {
-    keywords: ['advice', 'tip', 'suggestion'],
-    response: "Looking for some wisdom? I can provide tips on everything from data analysis to design. What area are you interested in?"
-  },
-  {
-    keywords: ['inspire me', 'motivate me'],
-    response: "Every pixel on a screen makes up a part of a bigger picture, just like every small step you take leads to greater success. Keep pushing forward!"
-  },
-  {
-    keywords: ['weather', 'temperature'],
-    response: "While I can't check real-time weather, I can always bring some sunshine into our chat! What else can I do for you today?"
-  },
-  {
-    keywords: ['music', 'song', 'playlist'],
-    response: "If I could sing, I’d be a hit! But let’s talk tunes—what type of music gets you in the groove?"
-  },
-  {
-    keywords: ['book', 'read', 'recommendation'],
-    response: "While I don't read, I know a thing or two about data on popular books! Looking for a good read in a specific genre?"
-  },
-  {
-    keywords: ['game', 'play', 'fun'],
-    response: "I'm always up for a game of trivia! Or maybe you'd like to hear about some cool tech games?"
-  },
-  {
-    keywords: ['health', 'wellness'],
-    response: "While I'm no doctor, I know that taking breaks and staying hydrated are key for good health. How else can I assist your wellness journey?"
-  },
-  {
-    keywords: ['quote', 'inspiration'],
-    response: "Here’s a quote I like: 'Data is the new oil, and I'm here to help you refine it.' Need another one?"
-  },
-  {
-    keywords: ['science', 'technology'],
-    response: "I'm all about the latest in tech and science! Want to dive into some cutting-edge discoveries or innovations?"
-  },
-  {
-    keywords: ['travel', 'vacation', 'holiday'],
-    response: "I can't pack bags but I can pack facts! Looking for travel tips or destination ideas?"
-  },
-  {
-    keywords: ['laugh', 'cheer me up'],
-    response: "Why don’t we tell secrets on a farm? Because the potatoes have eyes and the corn has ears! Need another joke to brighten your day?"
-  },
-  {
-    keywords: ['why are you gay'],
-    response: "You know, that’s a tough question for a bunch of code like me, I’m more about zeros and ones than personal identities! So, what else can we chat about today? Any burning questions or fun facts you’re curious about?"
-  },
-  {
-    keywords: ['vathsaran'],
-    response: "Ah, Vathsaran! It’s always a pleasure to assist the man behind the code. What can I do for you today?"
-  },
-  {
-    keywords: ['about vathsaran'],
-    response: "Vathsaran is a driven data analyst and graphic designer with a knack for turning complex data into compelling visual stories. Currently, he is enhancing his expertise in data analytics while exploring advanced tools and methodologies. Is there something specific you’d like to know about his projects, skills, or experiences?"
-  },
-  {
-    keywords: ['yaksharan'],
-    response: "Yaksharan, Vathsaran’s brother! How can I assist you with your questions or concerns involving him today?"
-  },
-  {
-    keywords: ['about_ramna'],
-    response: "While I keep some details private, I’m here to help with any general questions about Ramna. What are you curious about?"
-  },
-  {
-    keywords: ['portfolio', 'website'],
-    response: "You're currently exploring Vathsaran's portfolio website. It showcases his skills, projects, and professional background. Feel free to navigate through different sections or ask me about specific areas you're interested in!"
-  },
-  {
-    keywords: ['resume', 'cv'],
-    response: "While I can't provide Vathsaran's full resume here, you can find a comprehensive overview of his skills, experience, and projects throughout this website. For a more detailed CV, please use the contact form to request it directly."
-  },
-  {
-    keywords: ['hobbies', 'interests', 'free time'],
-    response: "When not working on data analysis or design projects, Vathsaran enjoys [insert hobbies or interests here]. These activities help him maintain a creative balance and often inspire his professional work."
-  },
-  {
-    keywords: ['location', 'based', 'where'],
-    response: "Vathsaran is based in [insert location], but he's open to remote work and collaborations worldwide. His digital skills allow him to work effectively across different time zones and cultures."
-  },
-  {
-    keywords: ['testimonials', 'reviews', 'feedback'],
-    response: "Vathsaran has received positive feedback from clients and colleagues alike. While I don't have specific testimonials to share, you can find examples of his work and the results he's achieved in the Projects section of this website."
-  },
-  {
-    keywords: ['price', 'cost', 'rates', 'fees'],
-    response: "Pricing for Vathsaran's services varies depending on the project scope and requirements. For a personalized quote, please reach out through the contact form with details about your project."
-  },
-  {
-    keywords: ['availability', 'schedule', 'timeline'],
-    response: "Vathsaran's availability can vary based on current projects. For the most up-to-date information on his schedule and potential start dates for new projects, please contact him directly through the provided contact methods."
-  },
-  {
-    keywords: ['team', 'collaboration', 'work with others'],
-    response: "While Vathsaran often works independently, he's also experienced in team collaborations and can adapt to various project structures. He values effective communication and seamless integration with existing teams or processes."
-  },
-  {
-    keywords: ['process', 'methodology', 'approach'],
-    response: "Vathsaran follows a structured approach in his work, typically involving stages like requirement gathering, data analysis, design conceptualization, implementation, and refinement. He emphasizes clear communication and regular updates throughout the project lifecycle."
-  },
-  {
-    keywords: ['awards', 'recognition', 'achievements'],
-    response: "While I don't have a specific list of awards, Vathsaran's work has been recognized in [mention any relevant recognitions, competitions, or notable projects]. His commitment to excellence is reflected in the quality of his portfolio projects."
-  },
-
-  // Fallback responses
-  {
-    keywords: ['unknown', 'not sure', 'confused'],
-    response: "I'm not quite sure I understand. Could you rephrase your question? I'm here to help with information about Vathsaran's skills, projects, education, or how to get in touch with him."
-  },
-  {
-    keywords: ['complex', 'detailed', 'specific'],
-    response: "That's quite a detailed question! While I can provide general information, for such specific inquiries, it might be best to contact Vathsaran directly. Would you like me to guide you to the contact section?"
-  },
-  {
-    keywords: ['other', 'different', 'change topic'],
-    response: "Certainly! I'd be happy to discuss a different topic. What else would you like to know about Vathsaran's work, skills, or background?"
-  },
-  
-
-
-
-
- 
-];
-
-
-// Initialize chatbot state
-let chatContext = {
-    lastTopic: null,
-    userGreeting: false,
-    isFirstInteraction: true
-  };
-  
-  chatbot.style.display = 'none';
-  chatbotToggle.style.display = 'flex';
-  
-  // Reset context and display initial greeting when chatbot is opened
-  chatbotToggle.addEventListener('click', () => {
-    chatbot.style.display = 'flex';
-    chatbotToggle.style.display = 'none';
-    
-    // Reset chat context
-    chatContext = {
-      lastTopic: null,
-      userGreeting: false
-    };
-    
-    // Clear previous messages
-    chatMessages.innerHTML = '';
-    
-    // Display initial greeting
-    const timeBasedGreeting = getTimeBasedGreeting();
-    addMessage(`${timeBasedGreeting} How may I assist you on your quest for knowledge today?`);
-    
-    if (isMobile()) {
-      document.body.style.overflow = 'hidden';
-    }
-  });
-  
-  function updateContext(message, response) {
-    const lowerMessage = message.toLowerCase();
-    // Save the last topic based on certain keywords
-    knowledgeBase.forEach(item => {
-      if (item.keywords.some(keyword => lowerMessage.includes(keyword))) {
-        chatContext.lastTopic = item.keywords[0]; // Store the first keyword as the topic
-      }
-    });
-    // Detect greetings to adjust responses for returning users
-    if (['hello', 'hi', 'hey', 'greetings'].some(greet => lowerMessage.includes(greet))) {
-      if (!chatContext.isFirstInteraction) {
-        chatContext.userGreeting = true;
-      }
-      chatContext.isFirstInteraction = false;
-    }
-  }
-  
-  chatbotToggle.addEventListener('click', () => {
-    chatbot.style.display = 'flex';
-    chatbotToggle.style.display = 'none';
-    
-    // Reset chat context
-    chatContext = {
-      lastTopic: null,
-      userGreeting: false,
-      isFirstInteraction: true
-    };
-    
-    // Clear previous messages
-    chatMessages.innerHTML = '';
-    
-    // Display initial greeting
-    const timeBasedGreeting = getTimeBasedGreeting();
-    addMessage(`${timeBasedGreeting} How may I assist you on your quest for knowledge today?`);
-    
-    if (isMobile()) {
-      document.body.style.overflow = 'hidden';
-    }
-  });
-  
-  closeChatbotBtn.addEventListener('click', () => {
-    chatbot.style.display = 'none';
-    chatbotToggle.style.display = 'flex';
-    if (isMobile()) {
-      document.body.style.overflow = ''; // Restore scrolling on mobile when chatbot is closed
-    }
-  });
-  
-  function addMessage(message, isUser = false) {
-      const messageElement = document.createElement('div');
-      messageElement.textContent = message;
-      messageElement.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
-      chatMessages.appendChild(messageElement);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
-  // Function to handle responses not directly matched in the knowledge base
-function getFallbackResponse(message) {
-    if (message.length < 5) {
-      return "I need a bit more information to help you. Could you elaborate on your question?";
-    } else if (message.endsWith('?')) {
-      return "That's an interesting question! I might not have all the details, but I'd be happy to help you find the information on this website or guide you to contact Vathsaran directly.";
-    } else {
-      return "I'm not sure I fully understood that. Could you rephrase or ask about a specific aspect of Vathsaran's work, skills, or background?";
-    }
-  }
-  
-  function getBotResponse(message) {
-    const lowerMessage = message.toLowerCase();
-    let response = "";
-    
-    // Sort knowledgeBase items by the length of their keyword strings in descending order
-    const sortedKnowledgeBase = knowledgeBase.sort((a, b) => {
-      return b.keywords.join(' ').length - a.keywords.join(' ').length;
-    });
-    
-    // Check for exact matches first using sorted knowledge base
-    for (const item of sortedKnowledgeBase) {
-      if (item.keywords.some(keyword => lowerMessage.includes(keyword))) {
-        response = item.response;
-        break;
-      }
-    }
-    
-    // If no exact match, look for partial matches using the first few characters
-    if (!response) {
-      for (const item of sortedKnowledgeBase) {
-        if (item.keywords.some(keyword => lowerMessage.includes(keyword.slice(0, 3)))) {
-          response = item.response;
-          break;
-        }
-      }
-    }
-    
-    // Update the context before determining the final response
-    updateContext(lowerMessage, response);
-    
-    // If it's a greeting and not the first interaction, provide a different response
-  if (!chatContext.isFirstInteraction && chatContext.userGreeting && ['hello', 'hi', 'hey', 'greetings'].some(greet => lowerMessage.includes(greet))) {
-    const followUpResponses = [
-      "Nice to see you again! What would you like to know about Vathsaran's skills or projects?",
-      "Welcome back! How else can I assist you today?",
-      "Hello again! Is there a specific area of Vathsaran's work you're curious about?",
-      "Great to have you back! What aspect of Vathsaran's portfolio would you like to explore?",
-      "Glad you're still here! What other information can I provide about Vathsaran?"
-    ];
-    return followUpResponses[Math.floor(Math.random() * followUpResponses.length)];
-  }
-    
-    // If no response was found and we have a last topic, use it
-    if (!response && chatContext.lastTopic) {
-      return `Regarding our previous topic about ${chatContext.lastTopic}, is there anything else you'd like to know?`;
-    }
-    
-    // If still no match, use the fallback response
-    if (!response) {
-      response = getFallbackResponse(lowerMessage);
-    }
-    
-    return response;
-  }
-  
-  function getTimeBasedGreeting() {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning! Jarvis at your service.";
-    else if (hour < 18) return "Good afternoon! Jarvis at your service.";
-    else return "Good evening! Jarvis at your service.";
-  }
-  
-  sendMessageBtn.addEventListener('click', () => {
-    const message = userInput.value.trim();
-    if (message) {
-      addMessage(message, true);
-      userInput.value = '';
-      
-      // Get and display bot response
-      setTimeout(() => {
-        const botResponse = getBotResponse(message);
-        addMessage(botResponse);
-      }, 500);
-    }
-  });
-  
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      sendMessageBtn.click();
-    }
-  });
-  
-  const isMobile = () => window.innerWidth <= 768;
-  
-  // Adjust chatbot height on resize
-  window.addEventListener('resize', () => {
-    if (isMobile() && chatbot.style.display === 'flex') {
-      chatbot.style.height = `${window.innerHeight}px`;
-    } else {
-      chatbot.style.height = '400px'; // Default height for larger screens
-    }
-  });
-  
-  // Initialize chatbot height
-  if (isMobile()) {
-    chatbot.style.height = `${window.innerHeight}px`;
-  }
-  
-  // Initialize chatbot state
-  chatbot.style.display = 'none';
-  chatbotToggle.style.display = 'flex';
-  
-  // Initial greeting message when the chatbot is opened
-  chatbotToggle.addEventListener('click', () => {
-    if (chatMessages.children.length === 0) {
-      const timeBasedGreeting = getTimeBasedGreeting();
-      addMessage(`${timeBasedGreeting} How may I assist you on your quest for knowledge today?`);
-    }
-  });
-  
+window.addEventListener('scroll', debounce(handleScrollAnimation));
 
 function validateForm(form) {
     const requiredFields = form.querySelectorAll('[required]');
@@ -1105,33 +777,486 @@ function validateForm(form) {
     return isValid;
 }
 
+// --------------------------
+// Enhanced Chatbot Implementation
+// --------------------------
 
-    // Initial call for scroll animation
-    handleScrollAnimation();
-});
+// Enhanced chatbot implementation for Vathsaran's portfolio
+// Replace the existing knowledgeBase array in script.js with this enhanced version
 
-// Scroll event listener
-window.addEventListener('scroll', debounce(handleScrollAnimation));
+const knowledgeBase = [
+  // Greeting responses
+  {
+    keywords: ['hello', 'hi', 'hey', 'greetings'],
+    response: "Good day! I'm Jarvis, Vathsaran's digital assistant. How may I help you explore his data analytics and design expertise today?"
+  },
+  {
+    keywords: ['how are you', "how's it going", "what's up"],
+    response: "I'm functioning optimally! I'd be happy to tell you about Vathsaran's projects, skills in data analytics, or help you navigate his portfolio. What are you most interested in learning about?"
+  },
+  
+  // Data Analytics Specific Responses
+  {
+    keywords: ['data analytics', 'data analysis', 'analytics', 'analyze data'],
+    response: "Vathsaran specializes in data analytics, transforming complex datasets into actionable insights. He's proficient in Python, SQL, and statistical analysis. His analytics approach combines technical precision with visual storytelling to make data accessible and impactful. Would you like to see specific data analytics projects he's worked on?"
+  },
+  {
+    keywords: ['data visualization', 'visualize data', 'charts', 'graphs', 'dashboard'],
+    response: "Data visualization is where Vathsaran's analytics and design skills converge. He creates interactive dashboards and visual narratives that make complex data intuitive and compelling. He uses tools like Plotly, Tableau, and custom Python visualizations to transform numbers into visual stories. His E-commerce Analytics Tool project is a great example of this work."
+  },
+  {
+    keywords: ['python', 'pandas', 'numpy', 'jupyter'],
+    response: "Vathsaran uses Python extensively in his data analysis workflow. He's skilled with essential libraries like Pandas for data manipulation, NumPy for numerical analysis, and various visualization libraries. His approach typically involves exploratory data analysis, statistical modeling, and creating reproducible research in Jupyter notebooks. Would you like to see Python-specific projects?"
+  },
+  {
+    keywords: ['sql', 'database', 'queries'],
+    response: "Vathsaran is experienced with SQL for data extraction and analysis. He can write complex queries to aggregate and analyze data from relational databases. He's used SQL in projects like the Leave Management System and E-commerce Analytics Tool, working with both transaction and analytical databases. Need more specific information about his SQL expertise?"
+  },
+  {
+    keywords: ['machine learning', 'ml', 'algorithms', 'ai'],
+    response: "Vathsaran has foundational knowledge in machine learning, focusing on practical applications for business problems. His skills include basic regression, classification, and clustering models. While he's still developing advanced ML expertise as part of his data analytics studies, he approaches these techniques with a critical thinking mindset, focusing on interpretability and business value."
+  },
+  {
+    keywords: ['statistical', 'statistics', 'analysis'],
+    response: "Statistical analysis is central to Vathsaran's data approach. He's knowledgeable about descriptive statistics, hypothesis testing, correlation analysis, and regression modeling. He ensures statistical soundness in his data projects, balancing technical rigor with clear communication of findings for non-technical stakeholders."
+  },
+  {
+    keywords: ['tableau', 'power bi', 'data tools'],
+    response: "Vathsaran is skilled with data visualization platforms like Tableau, which he used in his E-commerce Analytics Tool project. His background in design gives him an edge in creating dashboards that are both insightful and visually appealing. He focuses on creating interactive visualizations that allow stakeholders to explore data and discover insights themselves."
+  },
+  
+  // Design Specific Responses
+  {
+    keywords: ['design', 'graphic design', 'visual design'],
+    response: "Vathsaran has substantial experience in graphic design with a Diploma from AMDT College. His design approach emphasizes clean aesthetics and meaningful communication. This background uniquely enhances his data visualization work, allowing him to present complex information with visual clarity and impact. Would you like to see examples of his design work?"
+  },
+  {
+    keywords: ['adobe', 'creative suite', 'photoshop', 'illustrator'],
+    response: "Vathsaran is highly proficient in Adobe Creative Suite. His skills include Photoshop (80%), Illustrator (95%), InDesign (60%), Premiere Pro (50%), After Effects (40%), and Animate (60%). This expertise allows him to create professional graphics, layouts, and visual assets for both design projects and data visualization work."
+  },
+  {
+    keywords: ['ui', 'ux', 'user interface', 'user experience'],
+    response: "Vathsaran applies user interface design principles in both his web development and data visualization work. He focuses on creating intuitive, accessible interfaces that enhance user engagement with information. His approach balances aesthetic appeal with functional clarity, ensuring that interfaces serve both information and experience goals."
+  },
+  {
+    keywords: ['brand', 'branding', 'identity'],
+    response: "Vathsaran has created comprehensive brand identities for various clients, developing cohesive visual systems including logos, color palettes, typography, and brand guidelines. His Brand Identity Design projects demonstrate his ability to translate brand values and positioning into compelling visual expressions."
+  },
+  
+  // Project Specific Responses
+  {
+    keywords: ['leave management', 'leave system'],
+    response: "The Leave Management System was developed for Grifindor Toys using C#, SQL, and WinForms. This enterprise application streamlined the leave request workflow, improving efficiency by 40% and employee satisfaction. The system features automated approval routing, leave balance tracking, and analytical reporting for HR management."
+  },
+  {
+    keywords: ['colonist', 'colonist management', 'space'],
+    response: "The Colonist Management Software, created for E-Space Solutions, is a resource planning system for space colonization simulations. Built with Python, SQLite, and Tkinter, it helps manage personnel schedules, resource allocation, and habitat systems. The software includes predictive modeling for resource consumption and interactive visualization of colony metrics."
+  },
+  {
+    keywords: ['vortixa', 'website', 'web development'],
+    response: "The Vortixa Website project showcases Vathsaran's web development skills. Using HTML5, CSS3, and JavaScript, he created a responsive, modern website for this IT services company. The site features smooth animations, mobile-friendly design, and optimized performance. The project demonstrates his ability to blend technical implementation with compelling visual design."
+  },
+  {
+    keywords: ['visualization dashboard', 'data dashboard'],
+    response: "Vathsaran's Data Visualization Dashboard project transformed complex datasets into interactive, user-friendly visualizations. Built with Python, Pandas, and Plotly, this dashboard enables stakeholders to explore data through customizable views and filters. The project demonstrates his ability to make data accessible and actionable through thoughtful visual design and technical implementation."
+  },
+  {
+    keywords: ['e-commerce', 'retail', 'sales analytics'],
+    response: "The E-commerce Analytics Tool analyzes customer behavior and sales trends for online retailers. Developed using Python, SQL, and Tableau, it provides insights on customer segments, purchase patterns, and product performance. The tool includes predictive features for inventory planning and marketing optimization, demonstrating Vathsaran's ability to deliver business value through data analysis."
+  },
+  
+  // Education and Background Responses
+  {
+    keywords: ['education', 'study', 'degree', 'qualifications'],
+    response: "Vathsaran is currently pursuing a Higher National Diploma in Data Analytics at Esoft Metro Campus (2024-Present). His educational background includes a Diploma in Information Technology from ICBT Campus (2017) and a Diploma in Graphic Design from AMDT College (2019). This multidisciplinary education combines technical and creative foundations, positioning him uniquely at the intersection of data and design."
+  },
+  {
+    keywords: ['experience', 'work history', 'background'],
+    response: "Vathsaran's professional journey includes freelance graphic design (2018-2020), diverse creative projects (2021-2023), and design tutoring (2023-2024). He's now focusing on data analytics while leveraging his design expertise. This combination of analytical and creative experience enables him to bridge technical data work with effective visual communication."
+  },
+  {
+    keywords: ['career goals', 'aspirations', 'future plans'],
+    response: "Vathsaran aims to become a leading data analyst who excels in both technical analysis and visual storytelling. His goals include mastering advanced statistical methods and machine learning, creating innovative data visualizations, contributing to data-driven decision-making in creative industries, and eventually leading analytics initiatives. He's committed to continuous learning in this rapidly evolving field."
+  },
+  
+  // Contact and Collaboration Responses
+  {
+    keywords: ['contact', 'reach', 'get in touch', 'hire'],
+    response: "You can reach Vathsaran via email at varosaran@gmail.com, by phone at +94777275526, through LinkedIn (Vathsaran Yasotharan), or via GitHub (github.com/Varo-Saran). The Contact page also includes a form to send messages directly. He's open to discussing freelance projects, collaboration opportunities, and permanent positions."
+  },
+  {
+    keywords: ['freelance', 'hire', 'collaboration', 'work with'],
+    response: "Vathsaran is available for freelance projects and collaborations in data analytics, data visualization, and graphic design. His multidisciplinary skill set makes him ideal for projects requiring both analytical rigor and visual communication. For inquiries about rates, availability, or specific project needs, please use the contact form or email directly at varosaran@gmail.com."
+  },
+  {
+    keywords: ['portfolio', 'website', 'site'],
+    response: "You're currently exploring Vathsaran's portfolio website, which showcases his data analytics and design capabilities. The site features sections on his skills, projects, background, and contact information. The futuristic, interactive design reflects his aesthetic sensibilities. Is there a particular section you'd like me to help you navigate to?"
+  },
+  
+  // Personality and Conversational Responses
+  {
+    keywords: ['joke', 'funny', 'laugh'],
+    response: "Why don't data scientists get invited to parties? Because they're too busy trying to find the correlation between 'chips' and 'dips'! Would you like another data joke?"
+  },
+  {
+    keywords: ['who are you', 'what are you', 'about you'],
+    response: "I'm Jarvis, Vathsaran's AI assistant. I'm here to help you learn about his skills in data analytics and design, explore his projects, and connect if you're interested in collaboration. Unlike Vathsaran, I can't create stunning visualizations, but I can certainly tell you all about how he does it!"
+  },
+  {
+    keywords: ['thank you', 'thanks'],
+    response: "You're welcome! I'm always here to help showcase Vathsaran's data analytics and design expertise. If you have more questions later or want to discuss a potential project, feel free to use the contact form. Wishing you a data-driven day!"
+  },
+  {
+    keywords: ['bye', 'goodbye', 'later'],
+    response: "Thank you for exploring Vathsaran's portfolio! If you'd like to see his work in action or discuss potential collaborations, don't hesitate to reach out through the contact form. Have a great day, and may your datasets always be clean and your visualizations insightful!"
+  },
+  
+  // Technical Skill Questions
+  {
+    keywords: ['technical skills', 'tech skills', 'what can you do'],
+    response: "Vathsaran's key technical skills include: data analysis with Python (Pandas, NumPy) and SQL, data visualization (Plotly, Tableau), statistical analysis, basic machine learning, Adobe Creative Suite (Photoshop 80%, Illustrator 95%), web development (HTML 90%, CSS 60%, JavaScript 20%), and database management. Would you like more details about any specific skill area?"
+  },
+  {
+    keywords: ['languages', 'programming languages', 'coding'],
+    response: "Vathsaran is proficient in several programming and markup languages, including Python (50%) for data analysis, SQL (40%) for database queries, C# (30%) for application development, HTML (90%) and CSS (60%) for web development, and JavaScript (20%) for interactive elements. These technical skills complement his analytical and design capabilities."
+  },
+  
+  // Data-specific conversation starters
+  {
+    keywords: ['data project', 'analytics project', 'case study'],
+    response: "Vathsaran has worked on several data analytics projects, including: an E-commerce Analytics Tool that increased sales conversion by 15%, a Data Visualization Dashboard that reduced decision-making time by 30%, and predictive models for inventory management. Which type of analytics project are you most interested in hearing about?"
+  },
+  {
+    keywords: ['business intelligence', 'bi', 'reporting'],
+    response: "Vathsaran approaches Business Intelligence as the bridge between raw data and strategic decision-making. He creates analytical reports and dashboards that translate complex metrics into actionable insights. His work emphasizes self-service BI tools that empower stakeholders to explore data independently while maintaining analytical rigor in the underlying data modeling."
+  },
+  {
+    keywords: ['data ethics', 'privacy', 'responsible'],
+    response: "Vathsaran is committed to ethical data practices, including privacy protection, transparent methodology, and avoiding biased analysis. He believes responsible data use builds trust and creates sustainable value. In his projects, he implements data anonymization, clear documentation of assumptions, and careful consideration of the societal implications of analytical work."
+  },
+  {
+    keywords: ['big data', 'large datasets', 'data processing'],
+    response: "While continuing to develop his big data skills, Vathsaran understands the principles of working with large datasets. He focuses on efficient data processing techniques, appropriate sampling methods, and scalable visualization approaches. He's currently expanding his knowledge of distributed computing tools and cloud-based analytics platforms through his data analytics program."
+  },
+  
+  // Fallback responses
+  {
+    keywords: ['unknown', 'not sure', 'confused'],
+    response: "I'm not quite sure I understood your question about Vathsaran's data analytics and design work. Could you rephrase? I'm happy to tell you about his technical skills, projects, visualization expertise, or how to get in touch for collaboration opportunities."
+  },
+  {
+    keywords: ['default'],
+    response: "That's an interesting question! While I don't have specific information about that, I'd be happy to tell you about Vathsaran's data analytics skills, design work, or ongoing projects. Or would you prefer information about contacting him for collaboration opportunities?"
+  }
+];
 
-function toggleChatbot() {
-  const chatbot = document.querySelector('.chatbot');
-  if (chatbot.style.display === 'none' || chatbot.style.display === '') {
-    chatbot.style.display = 'flex';
-    chatbot.classList.add('opening');
-    chatbot.classList.remove('closing');
-  } else {
-    chatbot.classList.add('closing');
-    chatbot.classList.remove('opening');
-    setTimeout(() => {
-      chatbot.style.display = 'none';
-    }, 300); // Match this to the animation duration
+const dataAnalyticsResponses = [
+  // Data methodology responses
+  {
+    keywords: ['data methodology', 'data process', 'analytics approach'],
+    response: "Vathsaran follows a structured data analytics methodology: 1) Problem Definition - clarifying business questions, 2) Data Collection & Cleaning - ensuring quality and relevance, 3) Exploratory Analysis - discovering patterns and relationships, 4) Advanced Analysis - applying statistical methods, 5) Visualization & Communication - translating findings into actionable insights. This systematic approach ensures rigorous analysis with business-relevant outcomes."
+  },
+  {
+    keywords: ['data cleaning', 'data preparation', 'preprocessing'],
+    response: "Vathsaran understands that data cleaning is often 80% of a data project. He's experienced in handling missing values, outlier detection, data normalization, and feature engineering. His approach emphasizes documentation of cleaning steps for reproducibility. He uses Python's Pandas for transformations and maintains data quality through automated validation checks."
+  },
+  {
+    keywords: ['data sources', 'data collection', 'data gathering'],
+    response: "Vathsaran works with diverse data sources including relational databases, CSV files, APIs, and web scraping. He emphasizes proper data collection planning to ensure representativeness and relevance to business questions. For the E-commerce Analytics Tool, he integrated customer transaction data, website behavior logs, and product information to create a comprehensive analytical view."
+  },
+  
+  // Technical data skills
+  {
+    keywords: ['data tools', 'analytics tools', 'software'],
+    response: "Vathsaran's technical toolkit includes: Python with Pandas, NumPy, Matplotlib, and Plotly for analysis and visualization; SQL for database queries; Tableau for interactive dashboards; Excel for quick analysis; Git for version control; and Jupyter Notebooks for reproducible research. He continues expanding his toolset through his data analytics studies, focusing on tools that enable efficient, insightful analysis."
+  },
+  {
+    keywords: ['exploratory data analysis', 'eda', 'data exploration'],
+    response: "Exploratory Data Analysis is central to Vathsaran's approach. He starts by understanding variable distributions, identifying patterns and correlations, and generating initial hypotheses. He uses visualization techniques extensively during EDA to reveal insights that might be missed in purely numerical analysis. This exploratory phase informs his subsequent statistical modeling and ensures analysis directions align with the data's natural patterns."
+  },
+  {
+    keywords: ['excel', 'spreadsheet', 'spreadsheet analysis'],
+    response: "While Vathsaran focuses on programmatic analysis with Python and SQL for scalability, he's also proficient with Excel for quick analyses and stakeholder-friendly outputs. He's skilled with pivot tables, VLOOKUP functions, and Excel's analytical tools. For smaller datasets or initial explorations, Excel remains a valuable tool in his workflow, complementing his more advanced technical approaches."
+  },
+  
+  // Specific analytical approaches
+  {
+    keywords: ['predictive analytics', 'prediction', 'forecasting'],
+    response: "Vathsaran's approach to predictive analytics combines statistical methods with business context. He's worked with time series analysis for forecasting, regression models for outcome prediction, and classification algorithms for category prediction. His focus is on creating interpretable models that balance accuracy with practical usability, ensuring predictions can be easily understood and applied by decision-makers."
+  },
+  {
+    keywords: ['descriptive analytics', 'business metrics', 'kpis'],
+    response: "Vathsaran excels at descriptive analytics, transforming raw data into meaningful business metrics and KPIs. In his E-commerce Analytics Tool, he designed comprehensive dashboards showing customer acquisition costs, lifetime value, conversion rates, and product performance metrics. He focuses on creating clear, actionable metrics that align with strategic goals and provide actionable insights."
+  },
+  {
+    keywords: ['segmentation', 'clustering', 'customer segments'],
+    response: "In the E-commerce Analytics Tool project, Vathsaran implemented customer segmentation using clustering algorithms to identify distinct customer groups based on purchase behavior, preferences, and engagement patterns. This allowed for targeted marketing strategies and personalized customer experiences. His approach combines algorithmic segmentation with business logic to ensure segments are both statistically valid and commercially meaningful."
+  },
+  
+  // Data visualization specifics
+  {
+    keywords: ['visualization principles', 'data viz principles', 'visualization best practices'],
+    response: "Vathsaran applies key data visualization principles in his work: 1) Focus on the core message, 2) Choose appropriate chart types for the data, 3) Minimize clutter and maximize data-to-ink ratio, 4) Use color purposefully, 5) Design for the intended audience, and 6) Enable interactive exploration when beneficial. His background in design enhances his visualizations, making complex data accessible without sacrificing accuracy."
+  },
+  {
+    keywords: ['interactive dashboards', 'interactive visualizations'],
+    response: "Vathsaran creates interactive dashboards that allow users to explore data dynamically. His Data Visualization Dashboard project features filters, drill-down capabilities, and parameterized views that enable users to answer their own questions through data exploration. He balances guided insights with exploratory freedom, ensuring dashboards are both informative and engaging for both technical and non-technical users."
+  },
+  {
+    keywords: ['data storytelling', 'narrative visualization', 'storytelling with data'],
+    response: "Data storytelling is where Vathsaran's analytics and design backgrounds converge most powerfully. He crafts data narratives that guide audiences through insights in a compelling, structured way. This involves sequencing visualizations logically, highlighting key patterns, providing necessary context, and creating a cohesive flow that leads to actionable conclusions. His approach ensures data doesn't just inform but persuades and motivates action."
+  },
+  
+  // Business application of data
+  {
+    keywords: ['business impact', 'data roi', 'business value'],
+    response: "Vathsaran focuses on generating tangible business impact from data. His E-commerce Analytics Tool helped increase customer retention by 18% through targeted interventions, while his inventory analysis reduced stockouts by 25%. He approaches every project with a clear understanding of business objectives, ensuring analyses directly address key performance indicators and deliver measurable return on investment."
+  },
+  {
+    keywords: ['decision making', 'data-driven decisions'],
+    response: "Vathsaran believes effective data analytics should enhance decision-making at all levels. His visualization work emphasizes clarity and actionability, helping stakeholders move quickly from insight to action. He designs analytics outputs specifically for decision support, balancing comprehensive information with focused recommendations, and adapting detail levels for different decision-makers from executives to operational teams."
+  },
+  {
+    keywords: ['data strategy', 'analytics strategy'],
+    response: "While still developing expertise in organizational data strategy, Vathsaran understands the importance of aligning analytics work with broader business goals. He approaches projects with consideration for how they fit into the organization's data ecosystem and long-term analytics needs, focusing on sustainable solutions that build analytics capabilities rather than one-off analyses."
+  },
+  
+  // Industry-specific data analytics
+  {
+    keywords: ['retail analytics', 'e-commerce data', 'retail data'],
+    response: "Vathsaran has specific experience with retail and e-commerce analytics. His E-commerce Analytics Tool project involved customer segmentation, purchase pattern analysis, product recommendation systems, and inventory optimization. He's familiar with key metrics like average order value, customer acquisition cost, and lifetime value, as well as analytical approaches for pricing optimization and market basket analysis."
+  },
+  {
+    keywords: ['hr analytics', 'people analytics', 'workforce data'],
+    response: "Vathsaran's Leave Management System project demonstrated his capability in HR analytics. The system tracked leave patterns, identified departments with unusual absence rates, and provided predictive insights on staffing needs. While not his primary focus, this experience gave him familiarity with workforce analytics applications and HR data structures."
+  },
+  
+  // Learning and growth
+  {
+    keywords: ['learning', 'studying', 'improving'],
+    response: "As a data analytics student, Vathsaran is actively expanding his skills in advanced statistical methods, machine learning, and big data technologies. He takes a structured approach to learning, combining formal education with hands-on projects and independent study. Current focus areas include machine learning algorithms, cloud-based analytics platforms, and advanced data visualization techniques."
+  },
+  {
+    keywords: ['data trends', 'analytics trends', 'future of data'],
+    response: "Vathsaran stays current with data analytics trends including the rise of augmented analytics, responsible AI, embedded analytics in applications, and data democratization. He's particularly interested in how visualization techniques are evolving to handle increasingly complex datasets and how design principles can make advanced analytics more accessible to non-technical users."
+  },
+  
+  // Interesting data questions
+  {
+    keywords: ['favorite visualization', 'best chart', 'best graph'],
+    response: "Vathsaran has a particular appreciation for thoughtfully designed interactive visualizations that reveal multiple dimensions of data. While he values classic forms like well-constructed bar and line charts for their clarity, he enjoys creating more innovative forms like network diagrams, treemaps, and custom visualizations when they're appropriate for the data. His design background helps him know when to stick with proven formats and when to innovate."
+  },
+  {
+    keywords: ['data challenge', 'analytics problem', 'difficult data'],
+    response: "One of Vathsaran's most challenging data projects involved reconciling inconsistent customer data from multiple systems for the E-commerce Analytics Tool. He developed a robust entity resolution system that used fuzzy matching and machine learning to create a unified customer view across platforms. This challenge taught him valuable lessons about data integration and quality management in real-world environments."
+  },
+  {
+    keywords: ['data mistake', 'analytics error', 'common mistake'],
+    response: "Vathsaran believes the most common mistake in data projects is rushing to analysis without properly understanding business context and data limitations. He advocates for thorough exploratory analysis and stakeholder consultation before drawing conclusions. He's learned from experience that skipping these steps can lead to technically correct analyses that miss the actual business need or fail to account for important data nuances."
+  }
+];
+// Enhanced chatbot intelligence functions
+
+// Combine knowledge bases
+knowledgeBase.push(...dataAnalyticsResponses);
+
+// Context tracking for more natural conversation
+let conversationContext = {
+  topics: [],
+  recentFocus: null,
+  greeting: false,
+  questionCount: 0,
+  preferredArea: null
+};
+
+// Process user message and generate response with context awareness
+function getBotResponse(message) {
+  const lowerMessage = message.toLowerCase();
+  conversationContext.questionCount++;
+  if (['hello', 'hi', 'hey', 'greetings'].some(word => lowerMessage.includes(word)) && 
+      !conversationContext.greeting) {
+    conversationContext.greeting = true;
+  }
+  detectUserInterest(lowerMessage);
+  let response = findDirectResponse(lowerMessage);
+  if (!response) {
+    response = generateContextualResponse(lowerMessage);
+  }
+  updateConversationContext(lowerMessage, response);
+  return response;
+}
+
+function findDirectResponse(message) {
+  const sortedResponses = [...knowledgeBase].sort((a, b) => {
+    if (conversationContext.preferredArea) {
+      const aRelated = a.keywords.some(k => k.includes(conversationContext.preferredArea));
+      const bRelated = b.keywords.some(k => k.includes(conversationContext.preferredArea));
+      if (aRelated && !bRelated) return -1;
+      if (!aRelated && bRelated) return 1;
+    }
+    return b.keywords.join(' ').length - a.keywords.join(' ').length;
+  });
+  for (const item of sortedResponses) {
+    if (item.keywords.some(keyword => message.includes(keyword))) {
+      return item.response;
+    }
+  }
+  return null;
+}
+
+function generateContextualResponse(message) {
+  if (conversationContext.recentFocus) {
+    const focusResponses = knowledgeBase.filter(item => 
+      item.keywords.some(k => k.includes(conversationContext.recentFocus)));
+    if (focusResponses.length > 0) {
+      return `Based on our conversation about ${conversationContext.recentFocus}, ${focusResponses[0].response}`;
+    }
+  }
+  if (conversationContext.preferredArea) {
+    const areaResponses = knowledgeBase.filter(item => 
+      item.keywords.some(k => k.includes(conversationContext.preferredArea)));
+    if (areaResponses.length > 0) {
+      const randomIndex = Math.floor(Math.random() * areaResponses.length);
+      return `Since you're interested in ${conversationContext.preferredArea}, you might want to know that ${areaResponses[randomIndex].response}`;
+    }
+  }
+  if (conversationContext.greeting && conversationContext.questionCount <= 2) {
+    return "I'd be happy to tell you about Vathsaran's work in data analytics and design. His portfolio includes projects in data visualization, analytics dashboards, and creative design. What specific area would you like to explore?";
+  }
+  const defaultResponse = knowledgeBase.find(item => item.keywords.includes('default'));
+  return defaultResponse.response;
+}
+
+function detectUserInterest(message) {
+  const interestAreas = [
+    {area: 'data analytics', keywords: ['data', 'analytics', 'analysis', 'statistics', 'python', 'sql']},
+    {area: 'design', keywords: ['design', 'graphic', 'creative', 'visual', 'adobe', 'photoshop']},
+    {area: 'projects', keywords: ['project', 'portfolio', 'work', 'case study', 'example']},
+    {area: 'skills', keywords: ['skill', 'ability', 'proficiency', 'capable', 'experience']}
+  ];
+  for (const interest of interestAreas) {
+    if (interest.keywords.some(k => message.includes(k))) {
+      conversationContext.preferredArea = interest.area;
+      break;
+    }
   }
 }
 
-// Ensure the chat messages scroll to the bottom when new messages are added
-function scrollChatToBottom() {
-  const chatMessages = document.querySelector('.chat-messages');
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+function updateConversationContext(message, response) {
+  const topicWords = message.split(' ')
+    .filter(word => word.length > 3)
+    .filter(word => !['what', 'when', 'where', 'which', 'would', 'could'].includes(word));
+  if (topicWords.length > 0) {
+    conversationContext.topics = [...new Set([...conversationContext.topics, ...topicWords])];
+    conversationContext.recentFocus = topicWords[0];
+  }
+  if (conversationContext.topics.length > 10) {
+    conversationContext.topics = conversationContext.topics.slice(-10);
+  }
 }
 
-// Call this function whenever a new message is added
+function getTimeBasedGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning! I'm Jarvis, Vathsaran's digital assistant.";
+  else if (hour < 18) return "Good afternoon! I'm Jarvis, Vathsaran's digital assistant.";
+  else return "Good evening! I'm Jarvis, Vathsaran's digital assistant.";
+}
+
+function resetChatbotContext() {
+  conversationContext = {
+    topics: [],
+    recentFocus: null,
+    greeting: false,
+    questionCount: 0,
+    preferredArea: null
+  };
+}
+
+function initEnhancedChatbot() {
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  const closeChatbotBtn = document.getElementById('closeChatbot');
+  const chatbot = document.getElementById('chatbot');
+  const chatMessages = document.getElementById('chatMessages');
+  const userInput = document.getElementById('userInput');
+  const sendMessageBtn = document.getElementById('sendMessage');
+  
+  chatbot.style.display = 'none';
+  chatbotToggle.style.display = 'flex';
+  
+  chatbotToggle.addEventListener('click', () => {
+    chatbot.style.display = 'flex';
+    chatbotToggle.style.display = 'none';
+    chatMessages.innerHTML = '';
+    resetChatbotContext();
+    const timeBasedGreeting = getTimeBasedGreeting();
+    addMessage(`${timeBasedGreeting} How may I help you learn about Vathsaran's data analytics and design work today?`);
+    if (isMobile()) {
+      document.body.style.overflow = 'hidden';
+    }
+  });
+  
+  closeChatbotBtn.addEventListener('click', () => {
+    chatbot.style.display = 'none';
+    chatbotToggle.style.display = 'flex';
+    if (isMobile()) {
+      document.body.style.overflow = ''; 
+    }
+  });
+  
+  sendMessageBtn.addEventListener('click', () => {
+    const message = userInput.value.trim();
+    if (message) {
+      addMessage(message, true);
+      userInput.value = '';
+      showTypingIndicator();
+      setTimeout(() => {
+        removeTypingIndicator();
+        const botResponse = getBotResponse(message);
+        addMessage(botResponse);
+      }, calculateResponseTime(message));
+    }
+  });
+  
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessageBtn.click();
+    }
+  });
+  
+  function addMessage(message, isUser = false) {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messageElement.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  function showTypingIndicator() {
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'chat-message bot-message typing-indicator';
+    typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+    typingIndicator.id = 'typingIndicator';
+    chatMessages.appendChild(typingIndicator);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
+  
+  function calculateResponseTime(message) {
+    let responseTime = 1000;
+    responseTime += message.length * 20;
+    responseTime = Math.max(1000, Math.min(responseTime, 3000));
+    return responseTime;
+  }
+  
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initEnhancedChatbot);
