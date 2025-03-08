@@ -444,7 +444,6 @@
         padding: 6px 12px;
         font-size: 0.8em;
       }
-    }
 
     .project-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -465,10 +464,10 @@
 
     .chatbot {
         position: fixed;
-        bottom: 20px;
         width: 90vw; /* Wider on mobile */
         left: 5vw; /* Center on mobile */
-        height: calc(100vh - 120px); /* Adjust height to account for header */
+        bottom: 20px;
+        height: calc(100vh - 150px); /* Adjust height to account for header */
         max-height: 400px; /* Set a maximum height */
         background-color: rgba(0, 8, 20, 0.2);
         border: 2px solid var(--primary-color);
@@ -481,7 +480,7 @@
         backdrop-filter: blur(5px);
         transition: bottom 0.3s ease, height 0.3s ease;
         max-height: 90vh; /* Limit maximum height */
-        z-index: 1500; /*950 */
+        z-index: 950; /*950 */
         animation: glowBorder 3s infinite;
     }
 
@@ -502,6 +501,14 @@
     /* Ensure chatbot stays above keyboard */
     .chatbot.keyboard-open {
         bottom: calc(env(safe-area-inset-bottom, 20px) + 40px);
+        max-height: calc(100% - 80px); /* Maintain scrollable height */
+        touch-action: pan-y; /* Ensure vertical scrolling works */
+        z-index: 950; /* Ensure it stays above other content */
+    }
+
+    body.keyboard-open {
+        overflow: hidden; /* Disable background scrolling */
+        height: 100vh; /* Fix body height */
     }
 
     .chat-messages {
@@ -513,12 +520,14 @@
         gap: 12px;
         background-color: transparent;
         max-height: calc(100% - 80px); /* Adjust for header and input */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
     }
 
     .chat-message {
         max-width: 85%;
         font-size: 1em;
         padding: 12px 15px;
+        pointer-events: none; /* Prevent messages from intercepting scroll events */
     }
 
     .chat-input {

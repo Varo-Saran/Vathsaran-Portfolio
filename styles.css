@@ -1893,11 +1893,12 @@ input.error, textarea.error {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
-    -webkit-backdrop-filter: 5px;
-    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: 20px;
+    backdrop-filter: blur(20px);
     transition: bottom 0.3s ease, height 0.3s ease;
     max-height: 80vh; /* Reduced from 90vh to give more top space */
-    max-height: 90vh; /* Prevent overflow */
+    pointer-events: auto; /* Ensure chatbot captures events */
+    touch-action: none; /* Prevent default touch actions on chatbot itself */
     z-index: 950;
     animation: glowBorder 3s infinite;
 }
@@ -1969,6 +1970,11 @@ input.error, textarea.error {
     gap: 12px;
     background-color: transparent;
     transition: max-height 0.3s ease; /* Smooth height adjustment */
+    -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
+    touch-action: pan-y; /* Allow vertical scrolling */
+    max-height: calc(100% - 80px); /* Ensure consistent height */
+    position: relative;
+    z-index: 960; /* Higher than background elements */
 }
 
 .chat-message {
