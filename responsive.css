@@ -479,7 +479,8 @@
         box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
         -webkit-backdrop-filter: 5px;
         backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
+        transition: bottom 0.3s ease, height 0.3s ease;
+        max-height: 90vh; /* Limit maximum height */
         z-index: 950;
         animation: glowBorder 3s infinite;
     }
@@ -516,12 +517,13 @@
     }
 
     .chat-input {
-        position: absolute;
+        position: sticky;
         bottom: 0;
         left: 0;
         right: 0;
         padding: 10px;
-        background-color: rgba(0, 8, 20, 0.95);
+        background-color: rgba(0, 8, 20, 0.95); /* More opaque background */
+        z-index: 960; /* Ensure it stays above messages */
     }
 
     .chat-input input {
@@ -546,9 +548,22 @@
     }
 
      /* iOS specific adjustments */
+    /* Specific iOS adjustments */
     @supports (-webkit-touch-callout: none) {
+        /* Target iOS devices */
+        .chatbot {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+        padding-bottom: constant(safe-area-inset-bottom, 20px);
+        }
+        
         .chat-messages {
-        padding-bottom: 80px; /* Increase padding for iOS keyboard */
+        /* Give more space for the keyboard */
+        padding-bottom: 60px;
+        }
+        
+        /* Fix for iOS focus issues */
+        input, textarea {
+        font-size: 16px; /* Prevents zooming on focus */
         }
     }
 
@@ -567,6 +582,21 @@
         height: 50px;
         font-size: 18px;
     }
+
+    /* Specific Android adjustments */
+  @supports not (-webkit-touch-callout: none) {
+    /* Target non-iOS devices (Android) */
+    .chatbot.keyboard-open {
+      bottom: 40vh; /* Adjust as needed, approximates keyboard height */
+    }
+  }
+  
+  /* When the keyboard is open */
+  .keyboard-open .chat-messages {
+    max-height: calc(100% - 60px); /* Adjust for input area height */
+  }
+
+    
 
 
 /* Animation for chatbot opening */

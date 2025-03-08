@@ -1253,6 +1253,69 @@ function initEnhancedChatbot() {
     responseTime = Math.max(1000, Math.min(responseTime, 3000));
     return responseTime;
   }
+
+  // This will adjust the chatbot position when keyboard appears
+
+function adjustChatbotForKeyboard() {
+  // Get the chatbot element
+  const chatbot = document.getElementById('chatbot');
+  
+  // Set up variables to detect keyboard
+  let windowHeight = window.innerHeight;
+  let isKeyboardOpen = false;
+  
+  // Event for when the viewport resizes (which happens when keyboard opens)
+  window.addEventListener('resize', function() {
+    // If the new height is significantly smaller than the original,
+    // keyboard is likely open
+    if (window.innerHeight < windowHeight * 0.75) {
+      if (!isKeyboardOpen) {
+        isKeyboardOpen = true;
+        
+        // Move the chatbot up
+        chatbot.style.bottom = '40%';
+        chatbot.style.height = '45%';
+      }
+    } else {
+      if (isKeyboardOpen) {
+        isKeyboardOpen = false;
+        
+        // Reset chatbot position
+        chatbot.style.bottom = '20px';
+        chatbot.style.height = '400px';
+        
+        // On iOS devices, we need to scroll to focus on input
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+          window.scrollTo(0, 0);
+        }
+      }
+    }
+  });
+
+  // Additional handler for input focus
+  const userInput = document.getElementById('userInput');
+  
+  userInput.addEventListener('focus', function() {
+    // Small delay to let keyboard open
+    setTimeout(function() {
+      // Scroll to make input visible
+      userInput.scrollIntoView({ behavior: 'smooth' });
+      
+      // Add bottom margin to body to push content up
+      if (/Android/.test(navigator.userAgent)) {
+        document.body.style.marginBottom = '40vh';
+      }
+    }, 300);
+  });
+  
+  userInput.addEventListener('blur', function() {
+    // Reset body margin
+    document.body.style.marginBottom = '0';
+  });
+}
+
+// Call the function
+adjustChatbotForKeyboard();
   
   function isMobile() {
     return window.innerWidth <= 768;
