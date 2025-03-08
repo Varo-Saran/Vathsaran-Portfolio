@@ -2102,7 +2102,17 @@ input.error, textarea.error {
     box-shadow: 0 0 5px var(--accent-color);
 }
 
-
+/* Improved visibility when typing */
+.chat-input:focus-within {
+    background-color: rgba(0, 8, 20, 0.95);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Make sure focus state is very visible */
+  .chat-input input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+  }
 
 .chatbot-toggle {
     position: fixed;
