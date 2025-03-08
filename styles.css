@@ -1880,6 +1880,7 @@ input.error, textarea.error {
 }
 
 /* Chatbot Styles */
+/* Chatbot Styles */
 .chatbot {
     position: fixed;
     bottom: 20px;
@@ -1893,15 +1894,12 @@ input.error, textarea.error {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
-    -webkit-backdrop-filter: 20px;
-    backdrop-filter: blur(20px);
-    transition: bottom 0.3s ease, height 0.3s ease;
-    max-height: 80vh; /* Reduced from 90vh to give more top space */
-    pointer-events: auto; /* Ensure chatbot captures events */
-    touch-action: none; /* Prevent default touch actions on chatbot itself */
+    -webkit-backdrop-filter: blur(10px); /* Increased blur */
+    backdrop-filter: blur(10px);
+    transition: none; /* Remove transitions for simplicity */
     z-index: 950;
     animation: glowBorder 3s infinite;
-}
+  }
 
 /* Animations */
 @keyframes glowBorder {

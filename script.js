@@ -1174,54 +1174,34 @@ function resetChatbotContext() {
 
 function adjustChatbotForKeyboard() {
   const chatbot = document.getElementById('chatbot');
-  const userInput = document.getElementById('userInput');
+  const chatInput = document.querySelector('.chat-input');
   const chatMessages = document.getElementById('chatMessages');
+  const userInput = document.getElementById('userInput');
   let initialWindowHeight = window.innerHeight;
   let isKeyboardOpen = false;
 
-  // Smooth transition for position changes
-  chatbot.style.transition = 'bottom 0.3s ease, height 0.3s ease';
+  // Smooth transition for bottom changes
+  chatInput.style.transition = 'bottom 0.3s ease';
 
   // Function to adjust chatbot position
   function updateChatbotPosition() {
-    if (isKeyboardOpen) {
-      const keyboardHeight = initialWindowHeight - window.innerHeight;
-      const safeBottom = keyboardHeight + 40;
-      chatbot.style.bottom = `${safeBottom}px`;
-      chatbot.style.height = `calc(80vh - ${safeBottom + 80}px)`;
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      // Add keyboard-open class for CSS targeting
-      chatbot.classList.add('keyboard-open');
-    } else {
-      chatbot.style.bottom = '20px';
-      chatbot.style.height = '400px';
-      chatbot.classList.remove('keyboard-open');
+    if (isMobile()) {
+      if (isKeyboardOpen) {
+        const keyboardHeight = initialWindowHeight - window.innerHeight;
+        const safeBottom = keyboardHeight;
+        chatInput.style.bottom = `${safeBottom}px`;
+        chatbot.classList.add('keyboard-open');
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to bottom
+      } else {
+        chatInput.style.bottom = '0px';
+        chatbot.classList.remove('keyboard-open');
+      }
     }
   }
 
-  // Prevent background scrolling when interacting with chatbot
-  function preventBackgroundScroll(e) {
-    if (chatbot.contains(e.target)) {
-      e.preventDefault();
-    }
-  }
-
-  // Enable touch scrolling within chat-messages
-  chatMessages.addEventListener('touchstart', (e) => {
-    e.stopPropagation(); // Stop event from reaching background
-  }, { passive: false });
-
+  // Prevent background scrolling and enable chat scrolling
   chatMessages.addEventListener('touchmove', (e) => {
-    e.stopPropagation();
-    // Allow scrolling only if content exceeds container height
-    const canScroll = chatMessages.scrollHeight > chatMessages.clientHeight;
-    if (!canScroll) {
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  chatMessages.addEventListener('touchend', (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Stop event from reaching background
   }, { passive: false });
 
   // Detect keyboard opening on resize
@@ -1231,48 +1211,37 @@ function adjustChatbotForKeyboard() {
       if (!isKeyboardOpen) {
         isKeyboardOpen = true;
         updateChatbotPosition();
-        document.body.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
+        document.body.classList.add('chatbot-open'); // Lock background scroll
       }
     } else if (isKeyboardOpen && newHeight >= initialWindowHeight * 0.9) {
       isKeyboardOpen = false;
       updateChatbotPosition();
-      document.body.removeEventListener('touchmove', preventBackgroundScroll);
+      document.body.classList.remove('chatbot-open');
     }
     initialWindowHeight = newHeight;
   });
 
   // Handle input focus (keyboard opening)
   userInput.addEventListener('focus', () => {
-    if (!isKeyboardOpen) {
+    if (!isKeyboardOpen && isMobile()) {
       isKeyboardOpen = true;
       setTimeout(() => {
         updateChatbotPosition();
-        userInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        document.body.addEventListener('touchmove', preventBackgroundScroll, { passive: false });
-      }, 300);
+        document.body.classList.add('chatbot-open');
+      }, 300); // Delay for keyboard animation
     }
   });
 
   // Handle input blur (keyboard closing)
   userInput.addEventListener('blur', () => {
-    setTimeout(() => {
-      if (isKeyboardOpen) {
+    if (isKeyboardOpen && isMobile()) {
+      setTimeout(() => {
         isKeyboardOpen = false;
         updateChatbotPosition();
-        document.body.removeEventListener('touchmove', preventBackgroundScroll);
-      }
-    }, 100);
+        document.body.classList.remove('chatbot-open');
+      }, 100); // Delay for keyboard dismissal
+    }
   });
-
-  // Ensure visibility on iOS
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-    document.body.style.height = '100vh';
-    userInput.addEventListener('focus', () => {
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 400);
-    });
-  }
 }
 
 function initEnhancedChatbot() {
@@ -1282,10 +1251,11 @@ function initEnhancedChatbot() {
   const chatMessages = document.getElementById('chatMessages');
   const userInput = document.getElementById('userInput');
   const sendMessageBtn = document.getElementById('sendMessage');
-  
+
+  // Initial state
   chatbot.style.display = 'none';
   chatbotToggle.style.display = 'flex';
-  
+
   chatbotToggle.addEventListener('click', () => {
     chatbot.style.display = 'flex';
     chatbotToggle.style.display = 'none';
@@ -1294,18 +1264,20 @@ function initEnhancedChatbot() {
     const timeBasedGreeting = getTimeBasedGreeting();
     addMessage(`${timeBasedGreeting} How may I help you learn about Vathsaran's data analytics and design work today?`);
     if (isMobile()) {
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('chatbot-open'); // Lock background scroll
+      document.body.style.overflow = 'hidden'; // Additional lock for safety
     }
   });
-  
+
   closeChatbotBtn.addEventListener('click', () => {
     chatbot.style.display = 'none';
     chatbotToggle.style.display = 'flex';
     if (isMobile()) {
-      document.body.style.overflow = ''; 
+      document.body.classList.remove('chatbot-open');
+      document.body.style.overflow = ''; // Restore scroll
     }
   });
-  
+
   sendMessageBtn.addEventListener('click', () => {
     const message = userInput.value.trim();
     if (message) {
@@ -1319,13 +1291,13 @@ function initEnhancedChatbot() {
       }, calculateResponseTime(message));
     }
   });
-  
+
   userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       sendMessageBtn.click();
     }
   });
-  
+
   function addMessage(message, isUser = false) {
     const messageElement = document.createElement('div');
     messageElement.textContent = message;
@@ -1333,7 +1305,7 @@ function initEnhancedChatbot() {
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-  
+
   function showTypingIndicator() {
     const typingIndicator = document.createElement('div');
     typingIndicator.className = 'chat-message bot-message typing-indicator';
@@ -1342,26 +1314,24 @@ function initEnhancedChatbot() {
     chatMessages.appendChild(typingIndicator);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-  
+
   function removeTypingIndicator() {
     const typingIndicator = document.getElementById('typingIndicator');
     if (typingIndicator) {
       typingIndicator.remove();
     }
   }
-  
+
   function calculateResponseTime(message) {
     let responseTime = 1000;
     responseTime += message.length * 20;
-    responseTime = Math.max(1000, Math.min(responseTime, 3000));
-    return responseTime;
+    return Math.max(1000, Math.min(responseTime, 3000));
   }
-  
+
   function isMobile() {
     return window.innerWidth <= 768;
   }
 
-  // Call the function
   adjustChatbotForKeyboard();
 }
 
