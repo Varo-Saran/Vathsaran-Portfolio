@@ -1172,6 +1172,12 @@ function resetChatbotContext() {
   };
 }
 
+// Global function to check if the device is mobile
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+// Adjust chatbot position based on keyboard visibility
 function adjustChatbotForKeyboard() {
   const chatbot = document.getElementById('chatbot');
   const chatInput = document.querySelector('.chat-input');
@@ -1244,6 +1250,7 @@ function adjustChatbotForKeyboard() {
   });
 }
 
+// Initialize the enhanced chatbot
 function initEnhancedChatbot() {
   const chatbotToggle = document.getElementById('chatbotToggle');
   const closeChatbotBtn = document.getElementById('closeChatbot');
@@ -1327,12 +1334,6 @@ function initEnhancedChatbot() {
     responseTime += message.length * 20;
     return Math.max(1000, Math.min(responseTime, 3000));
   }
-
-  function isMobile() {
-    return window.innerWidth <= 768;
-  }
-
-  adjustChatbotForKeyboard();
 }
 
 document.addEventListener('DOMContentLoaded', initEnhancedChatbot);

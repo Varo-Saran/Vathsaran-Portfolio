@@ -1889,17 +1889,17 @@ input.error, textarea.error {
     height: 400px;
     background-color: rgba(0, 8, 20, 0.2);
     border: 2px solid var(--primary-color);
-    border-radius: 15px;
+    border-radius: 15px; /* Consistent border radius for the entire chatbot */
     overflow: hidden;
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
-    -webkit-backdrop-filter: blur(10px); /* Increased blur */
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    transition: none; /* Remove transitions for simplicity */
+    transition: none;
     z-index: 950;
     animation: glowBorder 3s infinite;
-  }
+}
 
 /* Animations */
 @keyframes glowBorder {
@@ -1918,7 +1918,7 @@ input.error, textarea.error {
 }
 
 .chat-header {
-    background-color: transparent;
+    background-color: rgba(0, 8, 20, 0.95);
     border-bottom: 1px solid var(--primary-color);
     color: var(--primary-color);
     padding: 15px;
@@ -1926,6 +1926,9 @@ input.error, textarea.error {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
+    border-top-left-radius: 13px; /* Match the container's border radius minus border width */
+    border-top-right-radius: 13px;
 }
 
 .chat-header i {
@@ -1967,12 +1970,8 @@ input.error, textarea.error {
     flex-direction: column;
     gap: 12px;
     background-color: transparent;
-    transition: max-height 0.3s ease; /* Smooth height adjustment */
-    -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
-    touch-action: pan-y; /* Allow vertical scrolling */
-    max-height: calc(100% - 80px); /* Ensure consistent height */
-    position: relative;
-    z-index: 960; /* Higher than background elements */
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
 }
 
 .chat-message {
@@ -1985,11 +1984,7 @@ input.error, textarea.error {
     border: 1px solid var(--primary-color);
     background-color: rgba(0, 191, 255, 0.05);
     box-shadow: 0 0 5px rgba(0, 191, 255, 0.1);
-    transition: all 0.3s ease;
     animation: messageFadeIn 0.3s ease-out forwards;
-    transform: translateY(10px);
-    position: relative;
-    opacity: 0;
 }
 
 @keyframes messageFadeIn {
@@ -2047,15 +2042,17 @@ input.error, textarea.error {
 .chat-input {
     display: flex;
     align-items: center;
-    padding: 10px 15px;  /* adjusted padding */
-    background-color: transparent;
+    padding: 10px 15px;
+    background-color: rgba(0, 8, 20, 0.95);
     border-top: 1px solid var(--primary-color);
-    gap: 8px;  /* add space between input and button */
+    gap: 8px;
     position: sticky;
     bottom: 0;
-    z-index: 960; /* Ensure it stays above messages */
+    z-index: 960;
+    border-bottom-left-radius: 13px; /* Match the container's border radius minus border width */
+    border-bottom-right-radius: 13px;
 }
-
+  
 .chat-input input {
     flex-grow: 1;
     background: transparent;
@@ -2063,13 +2060,11 @@ input.error, textarea.error {
     border-radius: 20px;
     color: var(--text-color);
     font-size: 0.9em;
-    padding: 8px 12px;  /* reduced padding */
+    padding: 8px 12px;
     outline: none;
     transition: all 0.3s ease;
-    min-width: 0;  /* allows input to shrink */
-    width: calc(100% - 45px);  /* account for button width */
 }
-
+  
 .chat-input input:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 10px var(--accent-color);
@@ -2084,17 +2079,13 @@ input.error, textarea.error {
     background: transparent;
     border: none;
     color: var(--primary-color);
-    font-size: 1.1em;  /* slightly smaller */
+    font-size: 1.1em;
     cursor: pointer;
-    padding: 6px;  /* reduced padding */
+    padding: 6px;
     border-radius: 50%;
-    min-width: 35px;  /* reduced min-width */
-    height: 35px;  /* match width for perfect circle */
+    min-width: 35px;
+    height: 35px;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;  /* prevent button from shrinking */
 }
 
 .chat-input button i,
@@ -2107,7 +2098,6 @@ input.error, textarea.error {
 }
 
 .chat-input button:hover {
-    border-color: var(--accent-color);
     color: var(--accent-color);
     box-shadow: 0 0 5px var(--accent-color);
 }

@@ -467,22 +467,21 @@
         bottom: 0;
         width: 100vw;
         height: 100vh;
-        border-radius: 0;
-        background-color: rgba(0, 8, 20, 0.6); /* Slightly darker */
-        max-height: none; /* Full height */
-        z-index: 2000; /* Above nav (1000-1999) */
+        border-radius: 15px; /* Maintain border radius on mobile */
+        background-color: rgba(0, 8, 20, 0.6);
+        z-index: 2000;
+        top: 0; /* Start from the very top */
+        padding-top: calc(20px + env(safe-area-inset-top, 20px)); /* Add padding to avoid browser overlay */
+        box-sizing: border-box; /* Include padding in height calculation */
     }
 
     .chat-header {
-        background-color: rgba(0, 8, 20, 0.95);
-        border-bottom: 1px solid var(--primary-color);
-        color: var(--primary-color);
-        padding: 15px;
-        font-size: 1em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-shrink: 0;
+        border-top-left-radius: 13px;
+        border-top-right-radius: 13px;
+        padding: 12px 15px;
+        position: sticky;
+        top: 0;
+        z-index: 2010; /* Ensure header stays above messages */
     }
 
     .chat-header i {
@@ -526,6 +525,7 @@
     .chatbot.keyboard-open .chat-input {
         position: absolute; /* Ensure it moves independently */
         width: 100%;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 20px)); /* Add safe area inset for bottom */
     }
 
     .chatbot.keyboard-open {
@@ -542,17 +542,9 @@
 
 
     .chat-messages {
-        flex-grow: 1;
-        padding: 15px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        background-color: transparent;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        touch-action: pan-y; /* Allow vertical scrolling */
-        max-height: none; /* Full height minus header/input */
-        height: calc(100% - 60px); /* Adjust for header */
+        max-height: none;
+        height: calc(100% - 120px); /* Adjust for header and input */
+        padding-top: 10px; /* Add padding to avoid overlap with header */
     }
 
     .chat-message {
@@ -580,16 +572,14 @@
     }
 
     .chat-input {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        background-color: rgba(0, 8, 20, 0.95);
-        border-top: 1px solid var(--primary-color);
-        gap: 8px;
-        position: sticky;
         bottom: 0;
-        z-index: 960;
         transition: bottom 0.3s ease;
+        border-bottom-left-radius: 13px;
+        border-bottom-right-radius: 13px;
+        padding: 12px 15px;
+        position: absolute; /* Ensure it moves independently */
+        width: 100%;
+        box-sizing: border-box;
     }
       
     .chat-input input {
@@ -659,51 +649,27 @@
      /* iOS specific adjustments */
     /* Specific iOS adjustments */
     @supports (-webkit-touch-callout: none) {
-        /* Target iOS devices */
         .chatbot {
-        padding-bottom: env(safe-area-inset-bottom, 40px);
-        padding-bottom: constant(safe-area-inset-bottom, 20px);
+          padding-top: calc(20px + constant(safe-area-inset-top, 20px)); /* Fallback for older iOS */
+          padding-bottom: calc(20px + constant(safe-area-inset-bottom, 20px));
         }
-        
+      
         .chat-messages {
-        /* Give more space for the keyboard */
-        padding-bottom: 60px;
+          padding-bottom: 60px;
         }
-        
-        /* Fix for iOS focus issues */
+      
         input, textarea {
-        font-size: 16px; /* Prevents zooming on focus */
+          font-size: 16px;
         }
     }
 
 
-    /* Android specific adjustments */
-    @supports not (-webkit-touch-callout: none) {
-        .chat-messages {
-            padding-bottom: 30vh; /* Add extra padding for Android keyboard */
-        }
-
-        #scrollToTopBtn {
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            font-size: 18px;
-        }
+/* Android specific adjustments */
+@supports not (-webkit-touch-callout: none) {
+    .chat-messages {
+      padding-bottom: 30vh;
     }
-
-    /* Specific Android adjustments */
-  @supports not (-webkit-touch-callout: none) {
-    /* Target non-iOS devices (Android) */
-    .chatbot.keyboard-open {
-      bottom: 40vh; /* Adjust as needed, approximates keyboard height */
-    }
-  }
-  
-  /* When the keyboard is open */
-  .keyboard-open .chat-messages {
-    max-height: calc(100% - 60px); /* Adjust for input area height */
-  }
+}
 
     
 
