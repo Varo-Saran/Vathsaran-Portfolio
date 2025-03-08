@@ -1895,7 +1895,8 @@ input.error, textarea.error {
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
     -webkit-backdrop-filter: 5px;
     backdrop-filter: blur(5px);
-    transition: bottom 0.3s ease, height 0.3s ease; /* Smooth movement */
+    transition: bottom 0.3s ease, height 0.3s ease;
+    max-height: 80vh; /* Reduced from 90vh to give more top space */
     max-height: 90vh; /* Prevent overflow */
     z-index: 950;
     animation: glowBorder 3s infinite;

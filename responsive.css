@@ -501,7 +501,7 @@
 
     /* Ensure chatbot stays above keyboard */
     .chatbot.keyboard-open {
-        bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+        bottom: calc(env(safe-area-inset-bottom, 20px) + 40px);
     }
 
     .chat-messages {
@@ -512,7 +512,7 @@
         flex-direction: column;
         gap: 12px;
         background-color: transparent;
-        max-height: calc(100% - 70px); /* Adjust for header and input */
+        max-height: calc(100% - 80px); /* Adjust for header and input */
     }
 
     .chat-message {
@@ -526,7 +526,8 @@
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 10px;
+        padding: 8px 15px; /* Slightly reduced padding for compactness */
+        min-height: 50px; /* Ensure enough space for taller keyboards */
         background-color: rgba(0, 8, 20, 0.95); /* More opaque background */
         z-index: 960; /* Ensure it stays above messages */
     }
@@ -557,7 +558,7 @@
     @supports (-webkit-touch-callout: none) {
         /* Target iOS devices */
         .chatbot {
-        padding-bottom: env(safe-area-inset-bottom, 20px);
+        padding-bottom: env(safe-area-inset-bottom, 40px);
         padding-bottom: constant(safe-area-inset-bottom, 20px);
         }
         

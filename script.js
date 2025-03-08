@@ -1186,9 +1186,10 @@ function adjustChatbotForKeyboard() {
   function updateChatbotPosition() {
     if (isKeyboardOpen) {
       const keyboardHeight = initialWindowHeight - window.innerHeight;
-      const safeBottom = keyboardHeight + 20; // 20px buffer above keyboard
+      const safeBottom = keyboardHeight + 40; // Increased buffer from 20px to 40px
       chatbot.style.bottom = `${safeBottom}px`;
-      chatbot.style.height = `calc(100vh - ${safeBottom + 100}px)`; // Adjust height to fit screen
+      // Reduce height further to account for potential extra UI elements
+      chatbot.style.height = `calc(80vh - ${safeBottom + 80}px)`; // Reduced from 100vh to 80vh
       chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
     } else {
       chatbot.style.bottom = '20px'; // Reset to original position
