@@ -466,8 +466,8 @@
     .chatbot {
         position: fixed;
         bottom: 20px;
-        left: 20px;
-        width: 300px;
+        width: 90vw; /* Wider on mobile */
+        left: 5vw; /* Center on mobile */
         height: calc(100vh - 120px); /* Adjust height to account for header */
         max-height: 400px; /* Set a maximum height */
         background-color: rgba(0, 8, 20, 0.2);
@@ -499,6 +499,11 @@
         gap: 10px;
     }
 
+    /* Ensure chatbot stays above keyboard */
+    .chatbot.keyboard-open {
+        bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+    }
+
     .chat-messages {
         flex-grow: 1;
         padding: 15px;
@@ -507,7 +512,7 @@
         flex-direction: column;
         gap: 12px;
         background-color: transparent;
-        max-height: calc(100% - 100px); /* Adjust to account for header and input */
+        max-height: calc(100% - 70px); /* Adjust for header and input */
     }
 
     .chat-message {

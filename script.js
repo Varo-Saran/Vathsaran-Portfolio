@@ -1172,6 +1172,77 @@ function resetChatbotContext() {
   };
 }
 
+function adjustChatbotForKeyboard() {
+  const chatbot = document.getElementById('chatbot');
+  const userInput = document.getElementById('userInput');
+  const chatMessages = document.getElementById('chatMessages');
+  let initialWindowHeight = window.innerHeight;
+  let isKeyboardOpen = false;
+
+  // Smooth transition for position changes
+  chatbot.style.transition = 'bottom 0.3s ease, height 0.3s ease';
+
+  // Function to adjust chatbot position
+  function updateChatbotPosition() {
+    if (isKeyboardOpen) {
+      const keyboardHeight = initialWindowHeight - window.innerHeight;
+      const safeBottom = keyboardHeight + 20; // 20px buffer above keyboard
+      chatbot.style.bottom = `${safeBottom}px`;
+      chatbot.style.height = `calc(100vh - ${safeBottom + 100}px)`; // Adjust height to fit screen
+      chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+    } else {
+      chatbot.style.bottom = '20px'; // Reset to original position
+      chatbot.style.height = '400px'; // Reset to original height
+    }
+  }
+
+  // Detect keyboard opening on resize
+  window.addEventListener('resize', () => {
+    const newHeight = window.innerHeight;
+    if (newHeight < initialWindowHeight * 0.9) { // Keyboard likely open
+      if (!isKeyboardOpen) {
+        isKeyboardOpen = true;
+        updateChatbotPosition();
+      }
+    } else if (isKeyboardOpen && newHeight >= initialWindowHeight * 0.9) {
+      isKeyboardOpen = false;
+      updateChatbotPosition();
+    }
+    initialWindowHeight = newHeight; // Update reference height
+  });
+
+  // Handle input focus (keyboard opening)
+  userInput.addEventListener('focus', () => {
+    if (!isKeyboardOpen) {
+      isKeyboardOpen = true;
+      setTimeout(() => {
+        updateChatbotPosition();
+        userInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 300); // Delay to allow keyboard to fully appear
+    }
+  });
+
+  // Handle input blur (keyboard closing)
+  userInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (isKeyboardOpen) {
+        isKeyboardOpen = false;
+        updateChatbotPosition();
+      }
+    }, 100); // Small delay to ensure keyboard is fully closed
+  });
+
+  // Ensure visibility on iOS
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    document.body.style.height = '100vh'; // Fix iOS viewport height issue
+    userInput.addEventListener('focus', () => {
+      setTimeout(() => {
+        window.scrollTo(0, 0); // Prevent iOS scrolling issues
+      }, 400);
+    });
+  }
+}
+
 function initEnhancedChatbot() {
   const chatbotToggle = document.getElementById('chatbotToggle');
   const closeChatbotBtn = document.getElementById('closeChatbot');
@@ -1253,73 +1324,13 @@ function initEnhancedChatbot() {
     responseTime = Math.max(1000, Math.min(responseTime, 3000));
     return responseTime;
   }
-
-  // This will adjust the chatbot position when keyboard appears
-
-function adjustChatbotForKeyboard() {
-  // Get the chatbot element
-  const chatbot = document.getElementById('chatbot');
-  
-  // Set up variables to detect keyboard
-  let windowHeight = window.innerHeight;
-  let isKeyboardOpen = false;
-  
-  // Event for when the viewport resizes (which happens when keyboard opens)
-  window.addEventListener('resize', function() {
-    // If the new height is significantly smaller than the original,
-    // keyboard is likely open
-    if (window.innerHeight < windowHeight * 0.75) {
-      if (!isKeyboardOpen) {
-        isKeyboardOpen = true;
-        
-        // Move the chatbot up
-        chatbot.style.bottom = '40%';
-        chatbot.style.height = '45%';
-      }
-    } else {
-      if (isKeyboardOpen) {
-        isKeyboardOpen = false;
-        
-        // Reset chatbot position
-        chatbot.style.bottom = '20px';
-        chatbot.style.height = '400px';
-        
-        // On iOS devices, we need to scroll to focus on input
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          window.scrollTo(0, 0);
-        }
-      }
-    }
-  });
-
-  // Additional handler for input focus
-  const userInput = document.getElementById('userInput');
-  
-  userInput.addEventListener('focus', function() {
-    // Small delay to let keyboard open
-    setTimeout(function() {
-      // Scroll to make input visible
-      userInput.scrollIntoView({ behavior: 'smooth' });
-      
-      // Add bottom margin to body to push content up
-      if (/Android/.test(navigator.userAgent)) {
-        document.body.style.marginBottom = '40vh';
-      }
-    }, 300);
-  });
-  
-  userInput.addEventListener('blur', function() {
-    // Reset body margin
-    document.body.style.marginBottom = '0';
-  });
-}
-
-// Call the function
-adjustChatbotForKeyboard();
   
   function isMobile() {
     return window.innerWidth <= 768;
   }
+
+  // Call the function
+  adjustChatbotForKeyboard();
 }
 
 document.addEventListener('DOMContentLoaded', initEnhancedChatbot);
