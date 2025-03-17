@@ -34,9 +34,10 @@
   }
   
   /* Theme toggle button styles */
+
   .theme-toggle {
-    position: fixed;
-    top: 80px;
+    position: absolute;
+    top: 10px; /* Position it within the header */
     right: 20px;
     width: 40px;
     height: 40px;
@@ -49,10 +50,10 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 950;
+    z-index: 1005; /* Ensure it's above other header elements */
     transition: all 0.3s ease;
     box-shadow: 0 0 5px var(--primary-color);
-  }
+ }
   
   .theme-toggle:hover {
     color: var(--accent-color);
@@ -240,6 +241,8 @@ nav {
     font-weight: bold;
     color: var(--primary-color);
     text-shadow: 0 0 2px var(--primary-color);
+    flex: 0 0 auto; /* Don't allow logo to grow or shrink */
+    margin-right: 20px; /* Add some space after the logo */
 }
 
 .nav-links {
@@ -328,12 +331,14 @@ nav {
 .search-container {
     position: relative;
     flex-grow: 1;
-    margin: 0 20px;
+    max-width: 500px; /* Limit maximum width */
+    margin: 0px auto; /* Center the search bar */
     z-index: 1003;
 }
 
 .search-input {
     width: 100%;
+    max-width: 100%; /* Ensure it doesn't exceed container */
     background-color: rgba(0, 191, 255, 0.1);
     border: 2px solid var(--primary-color);
     border-radius: 20px;

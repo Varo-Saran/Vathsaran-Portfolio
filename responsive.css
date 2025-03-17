@@ -92,6 +92,10 @@
     .contact-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .search-container {
+        max-width: 400px;
+    }
 }
 
 /* Large phones and small tablets */
@@ -125,11 +129,18 @@
         margin-right: auto;
     }
 
+    .theme-toggle {
+        top: 10px;
+        right: 70px; /* Position to the left of the mobile menu toggle */
+    }
+
     .search-container {
         order: 3;
+        max-width: 100%;
         width: 100%;
         margin: 10px 0;
     }
+
     .search-input {
         width: calc(100% - 40px); /* Full width minus button width */
     }
