@@ -131,7 +131,7 @@ function getSnippet(text, searchTerm, snippetLength = 150) {
     return highlightedSnippet;
 }
 
-// Theme toggle functionality
+// Theme toggle functionality - FIXED VERSION
 function initThemeToggle() {
   // Create theme toggle button
   const themeToggle = document.createElement('button');
@@ -139,65 +139,15 @@ function initThemeToggle() {
   themeToggle.className = 'theme-toggle';
   themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
   themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
-  document.body.appendChild(themeToggle);
   
-  // Check for saved theme preference or use system preference
-  const savedTheme = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
-  // Apply theme based on saved preference or system preference
-  if (savedTheme === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-  } else if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  // Append to the nav-wrapper instead of the body
+  const navWrapper = document.querySelector('.nav-wrapper');
+  if (navWrapper) {
+    navWrapper.appendChild(themeToggle);
+  } else {
+    console.error('Nav wrapper not found, falling back to body');
+    document.body.appendChild(themeToggle);
   }
-  
-  // Toggle theme function
-  function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    // Apply transition class for smooth color changes
-    document.documentElement.classList.add('theme-transition');
-    
-    // Set new theme
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // Update button icon
-    themeToggle.innerHTML = newTheme === 'dark' 
-      ? '<i class="fas fa-moon"></i>' 
-      : '<i class="fas fa-sun"></i>';
-    
-    // Add animation class
-    themeToggle.classList.add('rotate-animation');
-    
-    // Remove animation class after animation completes
-    setTimeout(() => {
-      themeToggle.classList.remove('rotate-animation');
-    }, 500);
-    
-    // Remove transition class after transitions complete
-    setTimeout(() => {
-      document.documentElement.classList.remove('theme-transition');
-    }, 500);
-  }
-  
-  // Add click event to toggle button
-  themeToggle.addEventListener('click', toggleTheme);
-}
-
-// Theme toggle functionality
-function initThemeToggle() {
-  // Create theme toggle button
-  const themeToggle = document.createElement('button');
-  themeToggle.id = 'themeToggle';
-  themeToggle.className = 'theme-toggle';
-  themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
-  themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
-  document.body.appendChild(themeToggle);
   
   // Check for saved theme preference or use system preference
   const savedTheme = localStorage.getItem('theme');
