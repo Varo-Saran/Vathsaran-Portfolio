@@ -2148,14 +2148,14 @@ input.error, textarea.error {
     height: 400px;
     background-color: rgba(0, 8, 20, 0.2);
     border: 2px solid var(--primary-color);
-    border-radius: 15px; /* Consistent border radius for the entire chatbot */
+    border-radius: 15px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    transition: none;
+    transition: all 0.3s ease;
     z-index: 950;
     animation: glowBorder 3s infinite;
 }
@@ -2246,18 +2246,20 @@ input.error, textarea.error {
     animation: messageFadeIn 0.3s ease-out forwards;
 }
 
+/* Animation for messages */
 @keyframes messageFadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-  }
-
-@keyframes fadeInUp {
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.chat-message {
+    animation: messageFadeIn 0.3s ease-out forwards;
 }
 
 .user-message {

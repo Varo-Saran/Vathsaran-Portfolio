@@ -1345,89 +1345,254 @@ function adjustChatbotForKeyboard() {
 }
 
 // Initialize the enhanced chatbot
-function initEnhancedChatbot() {
+// Enhanced Mobile Chatbot JavaScript
+
+// This function handles the mobile-specific behavior of the chatbot
+function initMobileChatbot() {
   const chatbotToggle = document.getElementById('chatbotToggle');
   const closeChatbotBtn = document.getElementById('closeChatbot');
   const chatbot = document.getElementById('chatbot');
   const chatMessages = document.getElementById('chatMessages');
   const userInput = document.getElementById('userInput');
   const sendMessageBtn = document.getElementById('sendMessage');
-
+  
+  // Track initial viewport dimensions for keyboard detection
+  let initialWindowHeight = window.innerHeight;
+  let isKeyboardOpen = false;
+  
   // Initial state
-  chatbot.style.display = 'none';
-  chatbotToggle.style.display = 'flex';
-
+  if (chatbot) chatbot.style.display = 'none';
+  if (chatbotToggle) chatbotToggle.style.display = 'flex';
+  
+  // Open chatbot
   chatbotToggle.addEventListener('click', () => {
     chatbot.style.display = 'flex';
     chatbotToggle.style.display = 'none';
-    chatMessages.innerHTML = '';
-    resetChatbotContext();
-    const timeBasedGreeting = getTimeBasedGreeting();
-    addMessage(`${timeBasedGreeting} How may I help you learn about Vathsaran's data analytics and design work today?`);
+    
+    // For mobile devices
     if (isMobile()) {
-      document.body.classList.add('chatbot-open'); // Lock background scroll
-      document.body.style.overflow = 'hidden'; // Additional lock for safety
-    }
-  });
-
-  closeChatbotBtn.addEventListener('click', () => {
-    chatbot.style.display = 'none';
-    chatbotToggle.style.display = 'flex';
-    if (isMobile()) {
-      document.body.classList.remove('chatbot-open');
-      document.body.style.overflow = ''; // Restore scroll
-    }
-  });
-
-  sendMessageBtn.addEventListener('click', () => {
-    const message = userInput.value.trim();
-    if (message) {
-      addMessage(message, true);
-      userInput.value = '';
-      showTypingIndicator();
+      document.body.classList.add('chatbot-open');
+      chatbot.classList.add('opening');
       setTimeout(() => {
-        removeTypingIndicator();
-        const botResponse = getBotResponse(message);
-        addMessage(botResponse);
-      }, calculateResponseTime(message));
+        chatbot.classList.remove('opening');
+      }, 300);
+    }
+    
+    // Focus input after a small delay (allows animation to complete)
+    setTimeout(() => {
+      userInput.focus();
+    }, 400);
+    
+    // Start with a clean slate
+    resetChatMessages();
+  });
+  
+  // Close chatbot
+  closeChatbotBtn.addEventListener('click', () => {
+    if (isMobile()) {
+      chatbot.classList.add('closing');
+      
+      // Wait for close animation to finish
+      setTimeout(() => {
+        chatbot.style.display = 'none';
+        chatbotToggle.style.display = 'flex';
+        chatbot.classList.remove('closing');
+        document.body.classList.remove('chatbot-open');
+      }, 300);
+    } else {
+      chatbot.style.display = 'none';
+      chatbotToggle.style.display = 'flex';
     }
   });
-
+  
+  // Handle the keyboard showing/hiding on mobile
+  function handleKeyboardVisibility() {
+    if (!isMobile()) return;
+    
+    // Detect keyboard state change by comparing window height
+    window.addEventListener('resize', () => {
+      const newWindowHeight = window.innerHeight;
+      
+      // If the height is significantly smaller, keyboard is likely open
+      if (newWindowHeight < initialWindowHeight * 0.8) {
+        if (!isKeyboardOpen) {
+          isKeyboardOpen = true;
+          chatbot.classList.add('keyboard-open');
+          
+          // Calculate the approximate keyboard height
+          const keyboardHeight = initialWindowHeight - newWindowHeight;
+          document.documentElement.style.setProperty('--keyboard-height', `${keyboardHeight}px`);
+          
+          // Scroll to the latest message
+          scrollToLatestMessage();
+        }
+      } else if (isKeyboardOpen && newWindowHeight > initialWindowHeight * 0.8) {
+        isKeyboardOpen = false;
+        chatbot.classList.remove('keyboard-open');
+        document.documentElement.style.removeProperty('--keyboard-height');
+      }
+    });
+    
+    // Focus events can also help detect keyboard state
+    userInput.addEventListener('focus', () => {
+      if (isMobile()) {
+        setTimeout(() => {
+          scrollToLatestMessage();
+          chatbot.classList.add('keyboard-open');
+        }, 300);
+      }
+    });
+    
+    userInput.addEventListener('blur', () => {
+      if (isMobile()) {
+        setTimeout(() => {
+          chatbot.classList.remove('keyboard-open');
+        }, 100);
+      }
+    });
+  }
+  
+  // Helper function to detect mobile devices
+  function isMobile() {
+    return window.innerWidth <= 768 || 
+           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+  
+  // Scroll to the latest message
+  function scrollToLatestMessage() {
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+  
+  // Reset chat messages (optional - remove if you want to keep history)
+  function resetChatMessages() {
+    if (chatMessages) {
+      // Keep only the initial greeting message or reset completely
+      // chatMessages.innerHTML = ''; // Uncomment to reset completely
+      
+      // Or keep just the initial greeting:
+      const botGreeting = document.createElement('div');
+      botGreeting.className = 'chat-message bot-message';
+      botGreeting.textContent = "Hi there! I'm Jarvis, Vathsaran's assistant. How can I help you today?";
+      chatMessages.innerHTML = '';
+      chatMessages.appendChild(botGreeting);
+      
+      scrollToLatestMessage();
+    }
+  }
+  
+  // Prevent scroll events from bubbling to body when in chat messages
+  if (chatMessages) {
+    chatMessages.addEventListener('touchmove', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+  }
+  
+  // Send message when button is clicked
+  sendMessageBtn.addEventListener('click', sendMessage);
+  
+  // Send message when Enter key is pressed
   userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-      sendMessageBtn.click();
+      sendMessage();
     }
   });
-
-  function addMessage(message, isUser = false) {
-    const messageElement = document.createElement('div');
-    messageElement.textContent = message;
-    messageElement.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function showTypingIndicator() {
-    const typingIndicator = document.createElement('div');
-    typingIndicator.className = 'chat-message bot-message typing-indicator';
-    typingIndicator.innerHTML = '<span></span><span></span><span></span>';
-    typingIndicator.id = 'typingIndicator';
-    chatMessages.appendChild(typingIndicator);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typingIndicator');
-    if (typingIndicator) {
-      typingIndicator.remove();
+  
+  // Send message function
+  function sendMessage() {
+    const message = userInput.value.trim();
+    if (message) {
+      // Add user message
+      addMessage(message, true);
+      
+      // Clear input
+      userInput.value = '';
+      
+      // Focus back on input
+      userInput.focus();
+      
+      // Show typing indicator
+      addTypingIndicator();
+      
+      // Simulate response after a short delay
+      setTimeout(() => {
+        removeTypingIndicator();
+        
+        // Generate a response (replace with your actual response function)
+        const response = "Thanks for your message! This is a placeholder response for demonstration purposes.";
+        
+        // Add bot response
+        addMessage(response, false);
+      }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
     }
   }
-
-  function calculateResponseTime(message) {
-    let responseTime = 1000;
-    responseTime += message.length * 20;
-    return Math.max(1000, Math.min(responseTime, 3000));
+  
+  // Add message to chat
+  function addMessage(text, isUser) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+    messageElement.textContent = text;
+    
+    chatMessages.appendChild(messageElement);
+    scrollToLatestMessage();
   }
+  
+  // Add typing indicator
+  function addTypingIndicator() {
+    const indicator = document.createElement('div');
+    indicator.className = 'chat-message bot-message typing-indicator';
+    indicator.id = 'typingIndicator';
+    
+    // Add the three dots
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement('span');
+      indicator.appendChild(dot);
+    }
+    
+    chatMessages.appendChild(indicator);
+    scrollToLatestMessage();
+  }
+  
+  // Remove typing indicator
+  function removeTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+  
+  // Initialize keyboard visibility handling
+  handleKeyboardVisibility();
+  
+  // Handle safe area insets for iOS devices
+  function setupSafeAreas() {
+    // Check if running on iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+      // Add class to help with CSS targeting
+      document.documentElement.classList.add('ios-device');
+      
+      // Apply safe area insets
+      document.head.insertAdjacentHTML('beforeend', `
+        <style>
+          .chat-input {
+            padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+          }
+          
+          .chatbot {
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+          }
+        </style>
+      `);
+    }
+  }
+  
+  // Call safe areas setup
+  setupSafeAreas();
 }
 
-document.addEventListener('DOMContentLoaded', initEnhancedChatbot);
+// Initialize when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initMobileChatbot);
