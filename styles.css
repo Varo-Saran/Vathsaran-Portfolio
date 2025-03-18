@@ -37,7 +37,9 @@
 
   /* Updated theme toggle button styles */
   .theme-toggle {
-    position: relative;
+    position: static;
+    transform: none;
+    margin: 0 15px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -235,6 +237,8 @@ nav {
     align-items: center;
     width: 100%;
     position: relative;
+    gap: 20px;
+    padding: 10px 0;
     z-index: 1001;
 }
 
@@ -322,6 +326,8 @@ nav {
     padding: 0;
     z-index: 1010;
     transition: all 0.3s ease;
+    order: 4;
+    margin-left: auto;
   }
   
   .mobile-menu-toggle span {
@@ -469,7 +475,8 @@ nav {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 20px;
-    box-shadow: 0 0 8px var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);order: 2;
+    margin-left: auto;
   }
   
   .mobile-theme-toggle:hover,
@@ -520,7 +527,7 @@ nav {
 
   .search-container {
     position: relative;
-    flex-grow: 1;
+    flex: 1;
     max-width: 500px;
     order: 3; /* Make this come after the theme toggle */
     z-index: 1003;

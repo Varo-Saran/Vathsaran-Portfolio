@@ -117,7 +117,8 @@
     }
 
     .nav-wrapper {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        justify-content: space-between;
     }
 
     .container {
@@ -130,6 +131,7 @@
     }
 
     .theme-toggle {
+        display: none; /* Hide desktop toggle on mobile */
         top: 10px;
         right: 70px; /* Position to the left of the mobile menu toggle */
         margin-right: 15%;
@@ -137,10 +139,15 @@
 
     .search-container {
         order: 3;
+        width: 95%; /* Keeps the narrower width for better responsiveness */
         max-width: 100%;
-        width: 100%;
+        position: absolute;
+        top: 70px;
+        left: 4%;
+        right: 0%;
         margin: 10px 0;
     }
+    
 
     .search-input {
         width: calc(100% - 40px); /* Full width minus button width */
@@ -219,12 +226,7 @@
       }
       
       /* Search repositioning */
-      .search-container {
-        order: 3;
-        width: 100%;
-        max-width: 100%;
-        margin: 10px 0;
-      }
+    
 
       /* High-contrast focus states for accessibility */
     .mobile-menu-toggle:focus,

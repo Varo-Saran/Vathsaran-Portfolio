@@ -585,29 +585,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMobileMenu() {
       const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
       const navLinks = document.querySelector('.nav-links');
-      const navLinkItems = document.querySelectorAll('.nav-links a');
-      const header = document.querySelector('header');
       
-      // Create theme toggle if it doesn't exist yet
-      let themeToggle = document.getElementById('themeToggle');
-      if (!themeToggle) {
-        themeToggle = document.createElement('button');
-        themeToggle.id = 'themeToggle';
-        themeToggle.className = 'theme-toggle';
-        themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
-        
-        // Default icon based on current theme
+    // Keep only this modified section
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Get current theme from HTML attribute
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        
+        // Set initial icon
         themeToggle.innerHTML = currentTheme === 'dark' 
-          ? '<i class="fas fa-moon"></i>' 
-          : '<i class="fas fa-sun"></i>';
-          
-        // For desktop, append to nav-wrapper
-        const navWrapper = document.querySelector('.nav-wrapper');
-        if (navWrapper) {
-          navWrapper.appendChild(themeToggle);
-        }
-      }
+            ? '<i class="fas fa-moon"></i>' 
+            : '<i class="fas fa-sun"></i>';
+        
+        // Setup toggle functionality
+        setupThemeToggle(themeToggle);
+    }
+
       
       // Add theme toggle functionality
       setupThemeToggle(themeToggle);
