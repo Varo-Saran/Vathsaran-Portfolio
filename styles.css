@@ -36,8 +36,8 @@
   /* Theme toggle button styles */
 
   /* Updated theme toggle button styles */
-.theme-toggle {
-    position: relative; /* Changed from absolute */
+  .theme-toggle {
+    position: relative;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -49,10 +49,12 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-left: -160px; /* Add margin to separate from other nav elements */
+    /* Position to the left of search bar but still within the nav area */
+    order: 2; /* Control the visual order in flexbox */
+    margin-right: 20px; /* Space between toggle and search */
     transition: all 0.3s ease;
     box-shadow: 0 0 5px var(--primary-color);
-    z-index: 1005; /* Ensure it's above other header elements */
+    z-index: 1005;
   }
     
   .theme-toggle:hover {
@@ -241,6 +243,7 @@ nav {
     font-weight: bold;
     color: var(--primary-color);
     text-shadow: 0 0 2px var(--primary-color);
+    order: 1;
     flex: 0 0 auto; /* Don't allow logo to grow or shrink */
     margin-right: 20px; /* Add some space after the logo */
 }
@@ -306,6 +309,7 @@ nav {
     animation: glow 2s infinite;
 }
 
+/* Mobile Menu Toggle Button */
 .mobile-menu-toggle {
     display: none;
     flex-direction: column;
@@ -317,24 +321,210 @@ nav {
     cursor: pointer;
     padding: 0;
     z-index: 1010;
-}
-
-.mobile-menu-toggle span {
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-toggle span {
     width: 30px;
     height: 3px;
     background: var(--accent-color);
-    transition: all 0.3s linear;
+    transition: all 0.3s ease;
     position: relative;
     transform-origin: 1px;
-}
+    border-radius: 3px;
+  }
+  
+  /* Hamburger to X animation */
+  .mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg);
+    background: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+  
+  .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  
+  .mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg);
+    background: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+  
+  /* Hover effect */
+  .mobile-menu-toggle:hover span {
+    background: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+  
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100vh;
+    background-color: rgba(0, 8, 20, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 2000;
+    padding: 80px 30px 30px 30px;
+    overflow-y: auto;
+    transition: width 0.3s ease-in-out;
+    border-left: 1px solid var(--primary-color);
+    box-shadow: -5px 0 20px rgba(0, 191, 255, 0.2);
+  }
+  
+  .mobile-menu-overlay.active {
+    width: 280px;
+  }
+  
+  /* Close button */
+  .mobile-menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-close:hover {
+    color: var(--accent-color);
+    transform: rotate(90deg);
+  }
+  
+  /* Mobile Menu Links */
+  .mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .mobile-nav-links li {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .mobile-nav-links a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+    border-radius: 0 5px 5px 0;
+  }
+  
+  .mobile-nav-links a:hover,
+  .mobile-nav-links a:focus,
+  .mobile-nav-links a.active {
+    color: var(--accent-color);
+    background-color: rgba(0, 191, 255, 0.1);
+    border-left-color: var(--accent-color);
+    transform: translateX(5px);
+  }
+  
+  /* Mobile Theme Toggle */
+  .mobile-theme-toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-top: 30px;
+    border-top: 1px solid rgba(0, 191, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+  }
+  
+  .mobile-theme-toggle-container span {
+    color: var(--text-color);
+    font-size: 1.1rem;
+  }
+  
+  .mobile-theme-toggle {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    box-shadow: 0 0 8px var(--primary-color);
+  }
+  
+  .mobile-theme-toggle:hover,
+  .mobile-theme-toggle:focus {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+  }
+  
+  /* Animation for mobile menu */
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+  
+  /* Rotation animation for theme toggle */
+  .rotate-animation {
+    animation: rotate360 0.5s ease;
+  }
+  
+  @keyframes rotate360 {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Fix for body when menu is open */
+  body.menu-open {
+    overflow: hidden;
+  }
+  
 
-.search-container {
+  .search-container {
     position: relative;
     flex-grow: 1;
-    max-width: 500px; /* Limit maximum width */
-    margin-right: 25%; /* Add space after the logo */
+    max-width: 500px;
+    order: 3; /* Make this come after the theme toggle */
     z-index: 1003;
-}
+  }
 
 
 .search-input {

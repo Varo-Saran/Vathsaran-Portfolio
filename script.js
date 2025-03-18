@@ -501,6 +501,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
     const searchSuggestions = document.querySelector('.search-suggestions');
+    // Initialize the improved mobile menu
+    initMobileMenu();
 
     initThemeToggle();
 
@@ -580,51 +582,191 @@ document.addEventListener('DOMContentLoaded', () => {
         showSuggestionsAndResults(searchInput.value);
     });
 
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileMenuToggle.classList.toggle('active');
-        navLinks.classList.toggle('active');
+    function initMobileMenu() {
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      const navLinkItems = document.querySelectorAll('.nav-links a');
+      const header = document.querySelector('header');
+      
+      // Create theme toggle if it doesn't exist yet
+      let themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) {
+        themeToggle = document.createElement('button');
+        themeToggle.id = 'themeToggle';
+        themeToggle.className = 'theme-toggle';
+        themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
         
-        if (navLinks.classList.contains('active')) {
-            navLinks.style.display = 'flex';
-            setTimeout(() => {
-                navLinks.style.opacity = '1';
-                navLinks.style.transform = 'translateY(0)';
-            }, 10);
-        } else {
-            navLinks.style.opacity = '0';
-            navLinks.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                navLinks.style.display = 'none';
-            }, 300);
+        // Default icon based on current theme
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        themeToggle.innerHTML = currentTheme === 'dark' 
+          ? '<i class="fas fa-moon"></i>' 
+          : '<i class="fas fa-sun"></i>';
+          
+        // For desktop, append to nav-wrapper
+        const navWrapper = document.querySelector('.nav-wrapper');
+        if (navWrapper) {
+          navWrapper.appendChild(themeToggle);
         }
-    });
-
-    navLinkItems.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenuToggle.classList.remove('active');
-            navLinks.classList.remove('active');
-            navLinks.style.opacity = '0';
-            navLinks.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                navLinks.style.display = 'none';
-            }, 300);
+      }
+      
+      // Add theme toggle functionality
+      setupThemeToggle(themeToggle);
+      
+      // Create a container for the mobile menu overlay
+      let mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+      if (!mobileMenuOverlay) {
+        mobileMenuOverlay = document.createElement('div');
+        mobileMenuOverlay.id = 'mobileMenuOverlay';
+        mobileMenuOverlay.className = 'mobile-menu-overlay';
+        document.body.appendChild(mobileMenuOverlay);
+        
+        // Create the close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'mobile-menu-close';
+        closeButton.innerHTML = '<i class="fas fa-times"></i>';
+        closeButton.setAttribute('aria-label', 'Close menu');
+        mobileMenuOverlay.appendChild(closeButton);
+        
+        // Add mobile theme toggle inside the overlay
+        const mobileThemeToggle = document.createElement('div');
+        mobileThemeToggle.className = 'mobile-theme-toggle-container';
+        mobileThemeToggle.innerHTML = `
+          <span>Theme</span>
+          <button id="mobileThemeToggle" class="mobile-theme-toggle" aria-label="Toggle Dark/Light Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        `;
+        mobileMenuOverlay.appendChild(mobileThemeToggle);
+        
+        // Clone nav links into the overlay
+        const mobileNavLinks = navLinks.cloneNode(true);
+        mobileNavLinks.className = 'mobile-nav-links';
+        mobileMenuOverlay.appendChild(mobileNavLinks);
+        
+        // Setup theme toggle for mobile
+        const mobileTToggle = document.getElementById('mobileThemeToggle');
+        setupThemeToggle(mobileTToggle);
+        
+        // Close button event
+        closeButton.addEventListener('click', () => {
+          mobileMenuToggle.classList.remove('active');
+          mobileMenuOverlay.classList.remove('active');
+          document.body.classList.remove('menu-open');
+          // Animate closing
+          mobileMenuOverlay.style.animation = 'fadeOutRight 0.3s forwards';
+          setTimeout(() => {
+            mobileMenuOverlay.style.display = 'none';
+            mobileMenuOverlay.style.animation = '';
+          }, 300);
         });
-    });
-
-    document.addEventListener('click', (event) => {
+        
+        // Add click events to mobile nav links
+        const mobileNavLinkItems = mobileMenuOverlay.querySelectorAll('.mobile-nav-links a');
+        mobileNavLinkItems.forEach(link => {
+          link.addEventListener('click', () => {
+            closeButton.click(); // Use the close button's click handler
+          });
+        });
+      }
+      
+      // Toggle menu event
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        mobileMenuOverlay.style.display = 'block';
+        
+        // Delay the animation slightly for better performance
+        setTimeout(() => {
+          mobileMenuOverlay.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+          
+          if (mobileMenuOverlay.classList.contains('active')) {
+            // Animate opening
+            mobileMenuOverlay.style.animation = 'fadeInRight 0.3s forwards';
+          } else {
+            // Animate closing
+            mobileMenuOverlay.style.animation = 'fadeOutRight 0.3s forwards';
+            setTimeout(() => {
+              mobileMenuOverlay.style.display = 'none';
+              mobileMenuOverlay.style.animation = '';
+            }, 300);
+          }
+        }, 10);
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', (event) => {
         const isClickInsideNav = navLinks.contains(event.target);
         const isClickOnToggle = mobileMenuToggle.contains(event.target);
+        const isClickInOverlay = mobileMenuOverlay && mobileMenuOverlay.contains(event.target);
         
-        if (!isClickInsideNav && !isClickOnToggle && navLinks.classList.contains('active')) {
-            mobileMenuToggle.classList.remove('active');
-            navLinks.classList.remove('active');
-            navLinks.style.opacity = '0';
-            navLinks.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                navLinks.style.display = 'none';
-            }, 300);
+        if (!isClickInsideNav && !isClickOnToggle && !isClickInOverlay && 
+            mobileMenuOverlay && mobileMenuOverlay.classList.contains('active')) {
+          mobileMenuToggle.click(); // Use the toggle's click handler
         }
-    });
+      });
+    }
+    
+    function setupThemeToggle(toggleButton) {
+      if (!toggleButton) return;
+      
+      // Get current theme
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      toggleButton.innerHTML = currentTheme === 'dark' 
+        ? '<i class="fas fa-moon"></i>' 
+        : '<i class="fas fa-sun"></i>';
+      
+      // Toggle theme function
+      function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Apply transition class for smooth color changes
+        document.documentElement.classList.add('theme-transition');
+        
+        // Set new theme
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update all theme toggle buttons
+        const allToggles = document.querySelectorAll('#themeToggle, #mobileThemeToggle');
+        allToggles.forEach(toggle => {
+          toggle.innerHTML = newTheme === 'dark' 
+            ? '<i class="fas fa-moon"></i>' 
+            : '<i class="fas fa-sun"></i>';
+          toggle.classList.add('rotate-animation');
+        });
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+          allToggles.forEach(toggle => {
+            toggle.classList.remove('rotate-animation');
+          });
+        }, 500);
+        
+        // Remove transition class after transitions complete
+        setTimeout(() => {
+          document.documentElement.classList.remove('theme-transition');
+        }, 500);
+      }
+      
+      // Add click event to toggle button
+      toggleButton.addEventListener('click', toggleTheme);
+    }
+    
+    // Apply theme from localStorage or system preference
+    function applyTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    }
+
+    // Apply theme as early as possible
+    applyTheme();
 
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
