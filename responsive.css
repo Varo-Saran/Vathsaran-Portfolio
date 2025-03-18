@@ -1176,3 +1176,642 @@
     }
 }
 }
+
+/* Improved Zoom Responsiveness */
+
+/* Base improvements for zoom handling */
+html {
+    /* This ensures rem units scale properly with zoom */
+    font-size: 16px;
+    /* Enable smooth scaling */
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  body {
+    /* Use min-width to prevent content from becoming too narrow */
+    min-width: 320px;
+    /* Ensure the body expands properly when zoomed */
+    width: auto !important;
+    /* Improve text readability when zoomed */
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Improve container behavior on zoom */
+  .container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    /* Prevent horizontal scrolling on zoom */
+    overflow-x: hidden;
+  }
+  
+  /* Prevent text overflow in critical elements */
+  h1, h2, h3, h4, h5, h6, p, .nav-links a, .logo, .btn, .skill-item h4 {
+    /* Allow long words to break if needed */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* Ensure reasonable line heights at all zoom levels */
+    line-height: 1.4;
+  }
+  
+  /* Improve navigation behavior on zoom */
+  .nav-wrapper {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    row-gap: 10px;
+  }
+  
+  .search-container {
+    min-width: 200px;
+    width: auto;
+  }
+  
+  /* Prevent flex items from becoming too narrow */
+  .project-grid,
+  .contact-grid,
+  .additional-skills-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  /* Ensure forms scale properly */
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  
+  /* Additional zoom-specific media queries */
+  @media screen and (min-width: 1200px) and (max-width: 1600px) {
+    /* Adjust for standard desktop zoom levels */
+    .hero h2 {
+      font-size: 2.5em;
+    }
+    
+    .hero p {
+      font-size: 1.2em;
+    }
+    
+    .section h2 {
+      font-size: 2em;
+    }
+  }
+  
+  /* Handle extreme zoom levels */
+  @media screen and (max-width: 800px) and (min-width: 769px) {
+    /* This catches desktop browsers at high zoom levels */
+    .nav-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .search-container {
+      margin: 10px 0;
+      width: 95%;
+      max-width: 400px;
+      order: 3;
+    }
+    
+    .theme-toggle {
+      margin: 10px 0;
+    }
+    
+    .hero h2 {
+      font-size: 2em;
+    }
+    
+    .hero p {
+      font-size: 1em;
+    }
+  }
+  
+  /* Fix for text scaling */
+  @media screen and (min-resolution: 1dppx) {
+    /* Adjust text scaling for high-DPI displays when zoomed */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+  
+  /* Table and grid fixes for zoom */
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  
+  /* Enhanced flex wrapping for better zoom behavior */
+  .skills-filter-buttons,
+  .technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .filter-btn,
+  .tech-tag {
+    flex: 0 0 auto;
+    margin-bottom: 5px;
+  }
+  
+  /* Fix for horizontal scrolling issues at certain zoom levels */
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Chatbot fixes for zoom */
+  .chat-message {
+    max-width: 80%;
+    box-sizing: border-box;
+  }
+  
+  .chatbot-toggle {
+    position: fixed;
+    z-index: 951;
+  }
+  
+  /* Add a min-height to prevent content collapse */
+  main {
+    min-height: 70vh;
+  }
+  
+  /* Improve slide behavior when zoomed */
+  .slide h2 {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .slide p {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Fix alignment issues at various zoom levels */
+  .slider-dots {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Fix for hero section buttons */
+  .btn {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+  }
+  
+  /* Timeline fixes for zoom */
+  @media screen and (min-width: 769px) and (max-width: 1000px) {
+    .timeline::after {
+      left: 40px;
+    }
+  
+    .timeline-item {
+      width: calc(100% - 80px);
+      padding-left: 60px;
+      padding-right: 20px;
+    }
+  
+    .timeline-item::before {
+      left: 50px;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent var(--primary-color) transparent transparent;
+    }
+  
+    .left::after, .right::after {
+      left: 25px;
+    }
+  
+    .right {
+      left: 0%;
+    }
+  }
+
+  /* Additional specific fixes for project components */
+/* Project cards should adapt to zoom levels */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 250px;
+  }
+  
+  .project-card h3 {
+    /* Ensure headings don't overflow */
+    font-size: clamp(1.2em, 4vw, 1.5em);
+  }
+  
+  .project-card p {
+    /* Adaptive text size */
+    font-size: clamp(0.85em, 2vw, 0.95em);
+  }
+  
+  /* Skill bars with adaptive sizes */
+  .skill-bar-container {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Fix vertical spacing issues that occur with zoom */
+  .section {
+    padding: clamp(40px, 8vh, 80px) 0;
+    margin-bottom: clamp(25px, 5vh, 50px);
+  }
+  
+  /* Contacts page specific fixes */
+  .contact-method {
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  .contact-method i {
+    font-size: clamp(1.8em, 5vw, 2.5em);
+  }
+  
+  .contact-method h3 {
+    font-size: clamp(1em, 3vw, 1.2em);
+  }
+  
+  /* Form specific fixes */
+  .contact-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  /* Avoid layout shifts when zooming */
+  .hologram {
+    width: auto;
+    box-sizing: border-box;
+  }
+  
+  /* Better support for high zoom levels while preserving mobile behavior */
+  @media screen and (min-width: 769px) {
+    /* Desktop-only zoom fixes */
+    
+    .hero-slider {
+      height: 100%;
+      width: 100%;
+    }
+    
+    /* Fix slider dots position - FIX HERE */
+    .slider-dots {
+      bottom: 20px;
+      /* Maintain horizontal centering with transform */
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      width: auto;
+    }
+    
+    /* Fix nav behavior at various zoom levels */
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .nav-links li {
+      margin: 0 0.5rem;
+    }
+  }
+  
+  /* Improved fluid typography that works at all zoom levels */
+  h1, .slide h2 {
+    font-size: clamp(2em, 5vw, 3em);
+  }
+  
+  h2, .section h2 {
+    font-size: clamp(1.8em, 4vw, 2.5em);
+  }
+  
+  h3, .section h3 {
+    font-size: clamp(1.4em, 3vw, 1.8em);
+  }
+  
+  p, .hologram p {
+    font-size: clamp(0.9em, 2vw, 1em);
+  }
+  
+  /* Fix layout issues when content reflows due to zoom */
+  @media (any-hover: hover) {
+    /* These only apply on devices with hover capability (typically desktops) */
+    
+    .additional-skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    /* Prevent horizontal scrolling when zoomed */
+    .container {
+      padding-left: clamp(10px, 2vw, 20px);
+      padding-right: clamp(10px, 2vw, 20px);
+    }
+  }
+  
+  /* Variable size adjustments for theme toggle and buttons */
+  .theme-toggle {
+    width: clamp(30px, 5vw, 40px);
+    height: clamp(30px, 5vw, 40px);
+    font-size: clamp(14px, 2vw, 18px);
+  }
+  
+  .btn {
+    padding: clamp(8px, 2vw, 10px) clamp(15px, 4vw, 30px);
+    font-size: clamp(0.9em, 2vw, 1em);
+  }
+  
+  /* Fix for particle js background at different zoom levels */
+  #particles-js {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  /* Timeline adjustments for zoom levels */
+  .timeline-content h3 {
+    font-size: clamp(1.2em, 3vw, 1.5em);
+  }
+  
+  .timeline-content .date {
+    font-size: clamp(0.8em, 2vw, 1em);
+  }
+  
+  .timeline-content p {
+    font-size: clamp(0.8em, 2vw, 0.9em);
+  }
+  
+  /* Ensure proper spacing for filter buttons */
+  .filter-btn {
+    margin: 3px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+    font-size: clamp(0.8em, 1.5vw, 0.9em);
+  }
+  
+  /* Improve scrollbar visibility at different zoom levels */
+  ::-webkit-scrollbar {
+    width: clamp(4px, 0.5vw, 8px);
+  }
+  
+  /* Footer adjustments */
+  footer {
+    padding: clamp(15px, 3vh, 20px) 0;
+    font-size: clamp(0.8em, 2vw, 1em);
+  }
+  
+  /* Fix for hero slider dots positioning */
+  .slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 15;
+    width: auto; /* Don't force full width */
+  }
+  
+  .slider-dot {
+    width: clamp(6px, 1vw, 12px);
+    height: clamp(6px, 1vw, 12px);
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    margin: 0 3px; /* Add horizontal spacing */
+  }
+  
+  .slider-dot.active {
+    transform: scale(1.2);
+  }
+  
+  /* Hero section responsiveness improvements */
+  .hero {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 5%;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure buttons stay in proper position */
+  .btn {
+    position: relative; /* Revert fixed positioning that might cause issues */
+    margin-top: 20px;
+    margin-bottom: 0;
+    display: inline-block;
+  }
+  
+  /* Fix slider controls */
+  .slider-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    padding: 0 5%;
+    z-index: 14;
+    pointer-events: none;
+  }
+  
+  .slider-prev,
+  .slider-next {
+    pointer-events: auto;
+  }
+
+  /* Navigation-specific fixes for zoom behavior */
+
+/* Ensure the header stays fixed properly */
+header {
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+  z-index: 1000;
+}
+
+/* Flexible nav container */
+nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem min(5%, 50px);
+  box-sizing: border-box;
+}
+
+/* Improve nav wrapper flex behavior */
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: min(20px, 3vw);
+  padding: min(10px, 1.5vh) 0;
+}
+
+/* Logo needs to maintain size and not wrap */
+.logo {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Search container improvements */
+.search-container {
+  flex: 1;
+}
+
+/* When viewport gets narrow but not mobile-narrow */
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .nav-wrapper {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .logo {
+    order: 1;
+    margin-right: 0;
+    flex: 0 0 auto;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .theme-toggle {
+    order: 2;
+    margin: 0 15px;
+  }
+  
+  .search-container {
+    order: 3;
+    flex: 0 1 auto;
+    width: 60%;
+    max-width: 400px;
+  }
+  
+  .nav-links {
+    margin-top: 10px;
+  }
+}
+
+/* Fix for very high zoom levels on desktop */
+@media screen and (min-width: 769px) and (max-width: 900px) {
+  /* At high zoom, reorganize nav items */
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-links li {
+    margin: 5px;
+  }
+  
+  .nav-links a {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    padding: 5px 10px;
+  }
+  
+  /* Adjust main content to account for taller header */
+  main {
+    padding-top: clamp(120px, 20vh, 180px);
+  }
+}
+
+/* Search input should scale properly */
+.search-input {
+  width: 100%;
+  padding: clamp(6px, 1vw, 10px) clamp(10px, 2vw, 15px);
+  font-size: clamp(0.8em, 1.5vw, 1em);
+  box-sizing: border-box;
+}
+
+/* Search button positioning */
+.search-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px;
+  background: transparent;
+  border: none;
+}
+
+/* Search suggestions need to match input width */
+.search-suggestions {
+  width: 100%;
+  box-sizing: border-box;
+  max-height: min(300px, 50vh);
+  overflow-y: auto;
+  z-index: 1100; /* Ensure it appears above other elements */
+}
+
+/* Ensure search suggestion items are readable */
+.search-suggestions li {
+  padding: clamp(8px, 1.5vw, 10px);
+  font-size: clamp(0.8em, 1.5vw, 0.9em);
+}
+
+/* Better positioning for theme toggle */
+.theme-toggle {
+  position: relative;
+  margin: 0 min(15px, 2vw);
+}
+
+/* Medium-high zoom adjustments */
+@media screen and (min-width: 820px) and (max-width: 1100px) {
+  .search-container {
+    max-width: 300px;
+  }
+}
+
+/* Fix extreme zoom scenario where items stack */
+@media screen and (min-width: 769px) and (max-width: 850px) {
+  .nav-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .search-container {
+    width: 90%;
+    max-width: 90%;
+    order: 3;
+  }
+  
+  .theme-toggle {
+    order: 2;
+  }
+  
+  .logo {
+    order: 1;
+    width: auto;
+  }
+}

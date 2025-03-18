@@ -52,7 +52,7 @@
     justify-content: center;
     cursor: pointer;
     /* Position to the left of search bar but still within the nav area */
-    order: 2; /* Control the visual order in flexbox */
+    order: 3; /* Control the visual order in flexbox */
     margin-right: 20px; /* Space between toggle and search */
     transition: all 0.3s ease;
     box-shadow: 0 0 5px var(--primary-color);
@@ -529,42 +529,72 @@ nav {
     position: relative;
     flex: 1;
     max-width: 500px;
-    order: 3; /* Make this come after the theme toggle */
+    order: 2; /* Make this come after the theme toggle */
     z-index: 1003;
+    min-width: 200px;
+    width: auto;
+    display: flex;
+    align-items: center;
   }
 
 
-.search-input {
+  .search-input {
     width: 100%;
-    max-width: 100%; /* Ensure it doesn't exceed container */
-    background-color: rgba(0, 191, 255, 0.1);
+    box-sizing: border-box;
+    padding-right: 40px; /* Make room for the search button */
+    
+    /* Blur effect styles */
+    background-color: rgba(0, 191, 255, 0.05); /* Semi-transparent background */
+    backdrop-filter: blur(8px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(8px); /* For Safari support */
+    
+    /* Enhance visual appearance */
     border: 2px solid var(--primary-color);
     border-radius: 20px;
     padding: 8px 15px;
     color: var(--text-color);
-    font-family: 'Orbitron', sans-serif;
+    
+    /* Smooth transitions */
     transition: all 0.3s ease;
-}
+  }
 
-.search-input:focus {
+  .search-input:focus {
     outline: none;
+    background-color: rgba(0, 191, 255, 0.1); /* Slightly more opaque on focus */
+    backdrop-filter: blur(10px); /* Increase blur on focus */
+    -webkit-backdrop-filter: blur(10px);
+    border-color: var(--accent-color);
     box-shadow: 0 0 15px var(--accent-color);
-}
+  }
 
-.search-input::placeholder {
+  /* Adjust placeholder text for better visibility */
+  .search-input::placeholder {
     color: rgba(224, 247, 255, 0.5);
-}
+    transition: opacity 0.3s ease;
+  }
+  
+  .search-input:focus::placeholder {
+    opacity: 0.7;
+  }
 
-.search-btn {
+  .search-btn {
     position: absolute;
-    right: -25px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: var(--primary-color);
     cursor: pointer;
-}
+    padding: 5px;
+    z-index: 1004;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+  }
 
 .search-btn:hover {
     color: var(--accent-color);

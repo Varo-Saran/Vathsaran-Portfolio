@@ -132,21 +132,30 @@ function getSnippet(text, searchTerm, snippetLength = 150) {
 }
 
 // Theme toggle functionality - FIXED VERSION
+// Modified initThemeToggle function to prevent duplicate toggle buttons
 function initThemeToggle() {
-  // Create theme toggle button
-  const themeToggle = document.createElement('button');
-  themeToggle.id = 'themeToggle';
-  themeToggle.className = 'theme-toggle';
-  themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
-  themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
-  
-  // Append to the nav-wrapper instead of the body
+  // Check if a theme toggle button already exists in the nav-wrapper
   const navWrapper = document.querySelector('.nav-wrapper');
-  if (navWrapper) {
-    navWrapper.appendChild(themeToggle);
+  let themeToggle = navWrapper ? navWrapper.querySelector('.theme-toggle') : null;
+  
+  // If no existing toggle is found, create a new one
+  if (!themeToggle) {
+    themeToggle = document.createElement('button');
+    themeToggle.id = 'themeToggle';
+    themeToggle.className = 'theme-toggle';
+    themeToggle.setAttribute('aria-label', 'Toggle Dark/Light Mode');
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Default icon (dark mode)
+    
+    // Append to the nav-wrapper instead of the body
+    if (navWrapper) {
+      navWrapper.appendChild(themeToggle);
+    } else {
+      console.error('Nav wrapper not found, falling back to body');
+      document.body.appendChild(themeToggle);
+    }
   } else {
-    console.error('Nav wrapper not found, falling back to body');
-    document.body.appendChild(themeToggle);
+    // Ensure the existing toggle has the correct ID
+    themeToggle.id = 'themeToggle';
   }
   
   // Check for saved theme preference or use system preference
