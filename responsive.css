@@ -640,6 +640,27 @@
         transform: scale(1.05);
     }
 
+    footer {
+      padding: 15px 0;
+    }
+    
+    footer p {
+      font-size: 0.8em;
+    }
+
+    [data-theme="light"] .chat-input {
+      position: sticky;
+      bottom: 0;
+      background-color: rgba(248, 252, 255, 0.97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Fix for keyboard open state in light theme */
+    [data-theme="light"] .keyboard-open .chat-input {
+      background-color: rgba(248, 252, 255, 0.97);
+    }
+
      /* iOS specific adjustments */
     /* Specific iOS adjustments */
     @supports (-webkit-touch-callout: none) {

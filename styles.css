@@ -13,15 +13,24 @@
   
   /* Light theme colors */
   [data-theme="light"] {
-    --primary-color: #0075a2;      /* Darker Blue */
-    --secondary-color: #0090c5;    /* Medium Blue */
-    --background-color: #f5fbff;   /* Very Light Blue */
-    --text-color: #001e3c;         /* Very Dark Blue */
-    --accent-color: #00a8e8;       /* Vibrant Blue */
-    --card-bg-color: rgba(0, 149, 200, 0.05);
-    --border-color: #0090c5;
-    --shadow-color: rgba(0, 149, 200, 0.2);
-    --hover-bg-color: rgba(0, 149, 200, 0.1);
+    --primary-color: #2D82B7;      /* Rich Blue - more vibrant */
+    --secondary-color: #1E88E5;    /* Bright Medium Blue */
+    --background-color: #F8FCFF;   /* Softer White with hint of blue */
+    --text-color: #1A365D;         /* Deep Navy - better readability */
+    --accent-color: #42A5F5;       /* Bright Sky Blue - more pop */
+    --card-bg-color: rgba(66, 165, 245, 0.05);
+    --border-color: #2196F3;       /* Brighter border */
+    --shadow-color: rgba(33, 150, 243, 0.2);
+    --hover-bg-color: rgba(66, 165, 245, 0.1);
+    
+    /* Additional variables for specific elements */
+    --heading-color: #0D47A1;      /* Deep Blue for headings */
+    --subheading-color: #1565C0;   /* Medium Blue for subheadings */
+    --particle-color1: #42A5F5;    /* Particle color 1 */
+    --particle-color2: #2196F3;    /* Particle color 2 */
+    --particle-color3: #1976D2;    /* Particle color 3 */
+    --link-color: #1976D2;         /* Link color */
+    --link-hover-color: #2962FF;   /* Link hover color */
   }
   
   /* Theme transition effect */
@@ -82,8 +91,27 @@
   }
   
   [data-theme="light"] header {
-    background: rgba(245, 251, 255, 0.95);
+    background: rgba(248, 252, 255, 0.97);
     border-bottom: 1px solid var(--primary-color);
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+  }
+  
+  [data-theme="light"] .logo {
+    color: var(--primary-color);
+    text-shadow: 0 0 1px rgba(33, 150, 243, 0.5);
+  }
+
+  [data-theme="light"] h1, 
+  [data-theme="light"] h2, 
+  [data-theme="light"] h3, 
+  [data-theme="light"] h4, 
+  [data-theme="light"] h5, 
+  [data-theme="light"] h6 {
+    color: var(--heading-color);
+  }
+
+  [data-theme="light"] p {
+    color: var(--text-color);
   }
   
   [data-theme="light"] .hologram,
@@ -162,19 +190,250 @@
     border-color: var(--border-color);
   }
   
-  [data-theme="light"] .chatbot {
-    background-color: rgba(245, 251, 255, 0.8);
+  /* Chatbot styling for light theme */
+[data-theme="light"] .chatbot {
+    background-color: rgba(248, 252, 255, 0.92);
     border-color: var(--primary-color);
+    box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+  }
+  
+  [data-theme="light"] .chat-header {
+    background-color: rgba(45, 130, 183, 0.97);
+    color: white;
+    border-bottom: 1px solid var(--primary-color);
+  }
+  
+  [data-theme="light"] .chat-title {
+    color: white;
+  }
+  
+  [data-theme="light"] .chat-header button {
+    color: white;
   }
   
   [data-theme="light"] .chat-message {
-    background-color: var(--card-bg-color);
+    background-color: rgba(66, 165, 245, 0.08);
+    border: 1px solid rgba(66, 165, 245, 0.2);
+    color: var(--text-color);
+    box-shadow: 0 1px 3px rgba(33, 150, 243, 0.1);
+  }
+  
+  [data-theme="light"] .user-message {
+    background-color: rgba(33, 150, 243, 0.12);
+    border-color: rgba(33, 150, 243, 0.3);
+  }
+  
+  [data-theme="light"] .chat-input {
+    background-color: rgba(248, 252, 255, 0.97);
+    border-top: 1px solid var(--primary-color);
+  }
+
+  /* Ensure the input area background remains light when focused */
+  [data-theme="light"] .chat-input:focus-within {
+    background-color: rgba(248, 252, 255, 0.97);
+    box-shadow: 0 -5px 15px rgba(33, 150, 243, 0.1);
+  }
+  
+  [data-theme="light"] .chat-input input {
+    background-color: rgba(66, 165, 245, 0.05);
+    border: 1px solid var(--primary-color);
     color: var(--text-color);
   }
   
-  /* Adjust particles opacity in light mode */
+  [data-theme="light"] .chat-input input::placeholder {
+    color: rgba(26, 54, 93, 0.5);
+  }
+
+  /* Fix focused input style */
+  [data-theme="light"] .chat-input input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+    outline: none;
+  }
+  
+  [data-theme="light"] .chat-input button {
+    background: transparent;
+    color: var(--primary-color);
+  }
+
+  [data-theme="light"] .chat-input button:hover {
+    color: var(--accent-color);
+  }
+  
+  /* Particle.js background adjustments for light theme */
   [data-theme="light"] #particles-js {
-    opacity: 0.5;
+    opacity: 0.65;
+  }
+  
+  [data-theme="light"] #particles-js::after {
+    background: linear-gradient(45deg, rgba(248, 252, 255, 0.7) 0%, rgba(248, 252, 255, 0.5) 100%);
+  }
+
+  /* Hologram cards in light theme */
+  [data-theme="light"] .hologram {
+    background-color: rgba(66, 165, 245, 0.04);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 2px 12px rgba(33, 150, 243, 0.1);
+  }
+  
+  [data-theme="light"] .hologram:hover {
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+    transform: translateY(-3px);
+  }
+
+  /* Project cards in light theme */
+  [data-theme="light"] .project-card {
+    background-color: rgba(66, 165, 245, 0.04);
+    border: 1px solid var(--border-color);
+  }
+
+  /* Hamburger menu toggle button in light theme */
+[data-theme="light"] .mobile-menu-toggle span {
+    background: var(--primary-color); /* Use the primary blue from our light theme */
+  }
+  
+  [data-theme="light"] .mobile-menu-toggle:hover span {
+    background: var(--accent-color);
+    box-shadow: 0 0 5px var(--accent-color);
+  }
+  
+  /* Active state for hamburger (X shape) */
+  [data-theme="light"] .mobile-menu-toggle.active span:nth-child(1),
+  [data-theme="light"] .mobile-menu-toggle.active span:nth-child(3) {
+    background: var(--accent-color);
+    box-shadow: 0 0 5px var(--accent-color);
+  }
+  
+  /* Mobile Menu Overlay in light theme */
+  [data-theme="light"] .mobile-menu-overlay {
+    background: rgba(248, 252, 255, 0.98); /* Lighter background */
+    border-left: 2px solid var(--primary-color);
+    box-shadow: -8px 0 30px rgba(33, 150, 243, 0.15);
+  }
+  
+  /* Close button in menu overlay */
+  [data-theme="light"] .mobile-menu-close {
+    color: var(--primary-color);
+  }
+  
+  [data-theme="light"] .mobile-menu-close:hover {
+    color: var(--accent-color);
+  }
+  
+  /* Mobile Menu Links */
+  [data-theme="light"] .mobile-nav-links a {
+    color: var(--text-color);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(66, 165, 245, 0.05) 50%,
+      transparent 100%
+    );
+    border-left: 3px solid transparent;
+  }
+  
+  [data-theme="light"] .mobile-nav-links a::before {
+    background: linear-gradient(
+      90deg,
+      transparent 25%,
+      rgba(66, 165, 245, 0.1) 50%,
+      transparent 75%
+    );
+  }
+  
+  [data-theme="light"] .mobile-nav-links a:hover,
+  [data-theme="light"] .mobile-nav-links a:focus,
+  [data-theme="light"] .mobile-nav-links a.active {
+    color: var(--heading-color);
+    background-color: rgba(66, 165, 245, 0.07);
+    border-left-color: var(--accent-color);
+  }
+  
+  /* Mobile Theme Toggle Container */
+  [data-theme="light"] .mobile-theme-toggle-container {
+    background: rgba(66, 165, 245, 0.05);
+    border: 1px solid var(--primary-color);
+  }
+  
+  [data-theme="light"] .mobile-theme-toggle-container span {
+    color: var(--text-color);
+  }
+  
+  [data-theme="light"] .mobile-theme-toggle {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+  }
+  
+  [data-theme="light"] .mobile-theme-toggle:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px var(--accent-color);
+  }
+  
+  /* Fix body background when menu is open */
+  [data-theme="light"] body.menu-open {
+    background-color: var(--background-color);
+  }
+
+  /* Light theme footer styling */
+[data-theme="light"] footer {
+    background: rgba(25, 118, 210, 0.05); /* Very light blue background */
+    border-top: 1px solid var(--primary-color);
+    color: var(--text-color);
+    box-shadow: 0 -2px 10px rgba(33, 150, 243, 0.1);
+  }
+  
+  [data-theme="light"] footer::before {
+    background: linear-gradient(90deg, 
+      rgba(33, 150, 243, 0) 0%, 
+      rgba(33, 150, 243, 0.2) 50%, 
+      rgba(33, 150, 243, 0) 100%);
+  }
+  
+  [data-theme="light"] footer p {
+    color: var(--text-color);
+  }
+  
+  /* Additional styling for expanded footer */
+  footer .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  footer .social-links {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  footer .social-links a {
+    color: var(--primary-color);
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+  }
+  
+  footer .social-links a:hover {
+    color: var(--accent-color);
+    transform: translateY(-3px);
+  }
+  
+  [data-theme="light"] footer .social-links a {
+    color: var(--primary-color);
+  }
+  
+  [data-theme="light"] footer .social-links a:hover {
+    color: var(--accent-color);
+  }
+  
+  [data-theme="light"] .tech-tag {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: var(--heading-color);
+    border: 1px solid rgba(33, 150, 243, 0.2);
   }
   
   /* Custom scrollbar for light mode */
@@ -1062,14 +1321,40 @@ h3 {
 }
 
 footer {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 6, 15, 0.9); /* Darker version of #000814 with high opacity */
+    border-top: 1px solid var(--primary-color);
     color: var(--text-color);
     text-align: center;
     padding: 20px 0;
     position: relative;
     z-index: 15;
     pointer-events: auto;
-}
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+  
+  footer p {
+    color: var(--text-color);
+    margin: 0;
+    padding: 0 20px;
+    font-size: 0.9em;
+  }
+  
+  /* Subtle glow effect for dark theme footer */
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      rgba(0, 191, 255, 0) 0%, 
+      rgba(0, 191, 255, 0.3) 50%, 
+      rgba(0, 191, 255, 0) 100%);
+    z-index: 16;
+  }
 
 /* Animations */
 @keyframes pulse {

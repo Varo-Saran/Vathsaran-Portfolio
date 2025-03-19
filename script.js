@@ -207,58 +207,164 @@ function initThemeToggle() {
 }
 
 // Particle.js configuration
-function initParticles() {
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 120, density: { enable: true, value_area: 800 } },
-            color: { value: ["#00bfff", "#1e90ff", "#4dc3ff"] },
-            shape: { 
-                type: ["circle", "triangle", "edge"],
-                stroke: { width: 0, color: "#000000" },
-            },
-            opacity: { 
-                value: 0.6, 
-                random: true,
-                anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
-            },
-            size: { value: 3, random: true, anim: { enable: true, speed: 2, size_min: 0.1, sync: false } },
-            line_linked: { 
-                enable: true, 
-                distance: 150, 
-                color: "#00bfff", 
-                opacity: 0.4, 
-                width: 1,
-                shadow: { enable: true, color: "#00bfff", blur: 5 }
-            },
-            move: { 
-                enable: true, 
-                speed: 3, 
-                direction: "none", 
-                random: true, 
-                straight: false, 
-                out_mode: "out", 
-                bounce: false,
-                attract: { enable: true, rotateX: 600, rotateY: 1200 }
-            }
-        },
-        interactivity: {
-            detect_on: "canvas",
-            events: { 
-                onhover: { enable: true, mode: "grab" }, 
-                onclick: { enable: true, mode: "push" }, 
-                resize: true
-            },
-            modes: { 
-                grab: { distance: 200, line_linked: { opacity: 1 } },
-                bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-                repulse: { distance: 200, duration: 0.4 },
-                push: { particles_nb: 4 },
-                remove: { particles_nb: 2 }
-            }
-        },
-        retina_detect: true
-    });
+// Improved particles configuration that works with theme toggling
+function updateParticlesForTheme() {
+  // Get current theme
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  
+  // Only proceed if particlesJS is available
+  if (typeof particlesJS === 'undefined') return;
+  
+  // Store base configuration that's common to both themes
+  const baseConfig = {
+    particles: {
+      number: { 
+        value: 120, 
+        density: { 
+          enable: true, 
+          value_area: 800 
+        } 
+      },
+      shape: { 
+        type: ["circle", "triangle", "edge"],
+        stroke: { width: 0, color: "#000000" },
+      },
+      opacity: { 
+        value: 0.6, 
+        random: true,
+        anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+      },
+      size: { 
+        value: 3, 
+        random: true, 
+        anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
+      },
+      move: { 
+        enable: true, 
+        speed: 3, 
+        direction: "none", 
+        random: true, 
+        straight: false, 
+        out_mode: "out", 
+        bounce: false,
+        attract: { enable: true, rotateX: 600, rotateY: 1200 }
+      }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { 
+        onhover: { enable: true, mode: "grab" }, 
+        onclick: { enable: true, mode: "push" }, 
+        resize: true
+      },
+      modes: { 
+        grab: { distance: 200, line_linked: { opacity: 1 } },
+        bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+        repulse: { distance: 200, duration: 0.4 },
+        push: { particles_nb: 4 },
+        remove: { particles_nb: 2 }
+      }
+    },
+    retina_detect: true
+  };
+  
+  // Theme-specific configurations
+  const themeConfigs = {
+    dark: {
+      particles: {
+        color: { value: ["#00bfff", "#1e90ff", "#4dc3ff"] },
+        line_linked: { 
+          enable: true, 
+          distance: 150, 
+          color: "#00bfff", 
+          opacity: 0.4, 
+          width: 1,
+          shadow: { enable: true, color: "#00bfff", blur: 5 }
+        }
+      }
+    },
+    light: {
+      particles: {
+        color: { value: ["#42A5F5", "#2196F3", "#1976D2"] },
+        line_linked: { 
+          enable: true, 
+          distance: 150, 
+          color: "#2196F3", 
+          opacity: 0.4, 
+          width: 1,
+          shadow: { enable: true, color: "#2196F3", blur: 3 }
+        }
+      }
+    }
+  };
+  
+  
+  // Function to deep merge objects
+  function deepMerge(target, source) {
+    for (const key in source) {
+      if (source.hasOwnProperty(key)) {
+        if (typeof source[key] === 'object' && source[key] !== null && target[key]) {
+          deepMerge(target[key], source[key]);
+        } else {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  }
+  
+  // Create final config by merging base with theme-specific
+  const finalConfig = deepMerge(
+    JSON.parse(JSON.stringify(baseConfig)), 
+    themeConfigs[currentTheme]
+  );
+  
+  // Reinitialize particles with the merged configuration
+  particlesJS('particles-js', finalConfig);
+  
+  // Update the particle opacity in CSS
+  if (currentTheme === 'light') {
+    document.getElementById('particles-js').style.opacity = '0.65';
+  } else {
+    document.getElementById('particles-js').style.opacity = '1';
+  }
 }
+
+// Backward compatibility function to prevent the error
+function initParticles() {
+  console.log("Using updated particles system");
+  updateParticlesForTheme();
+}
+
+// Set up event listeners for theme changes
+function setupThemeChangeListeners() {
+  // Find all theme toggle buttons
+  const themeToggles = document.querySelectorAll('#themeToggle, #mobileThemeToggle');
+  
+  themeToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      // Small delay to let theme change apply first
+      setTimeout(updateParticlesForTheme, 100);
+    });
+  });
+  
+  // Also run on initial load to set correct theme
+  setTimeout(updateParticlesForTheme, 500);
+}
+
+// Function to check if DOM is loaded
+function domReady(fn) {
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    setTimeout(fn, 1);
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+
+// Initialize when DOM is ready
+domReady(function() {
+  setupThemeChangeListeners();
+});
 
 // Enhanced automatic sliding hero with typing effect
 function initSlider() {
