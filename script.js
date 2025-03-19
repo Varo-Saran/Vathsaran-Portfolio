@@ -1356,20 +1356,30 @@ function initMobileChatbot() {
   const userInput = document.getElementById('userInput');
   const sendMessageBtn = document.getElementById('sendMessage');
   
-  // Track initial viewport dimensions for keyboard detection
+  // Early exit if elements don't exist
+  if (!chatbot || !chatbotToggle) return;
+  
+  // Store initial window height for keyboard detection
   let initialWindowHeight = window.innerHeight;
   let isKeyboardOpen = false;
   
   // Initial state
-  if (chatbot) chatbot.style.display = 'none';
-  if (chatbotToggle) chatbotToggle.style.display = 'flex';
+  chatbot.style.display = 'none';
+  chatbotToggle.style.display = 'flex';
+  
+  // Detect if device is mobile
+  const isMobile = () => {
+    return window.innerWidth <= 768 || 
+           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
   
   // Open chatbot
   chatbotToggle.addEventListener('click', () => {
+    // Display chatbot and hide toggle button
     chatbot.style.display = 'flex';
     chatbotToggle.style.display = 'none';
     
-    // For mobile devices
+    // For mobile devices, add fullscreen behaviors
     if (isMobile()) {
       document.body.classList.add('chatbot-open');
       chatbot.classList.add('opening');
@@ -1378,13 +1388,19 @@ function initMobileChatbot() {
       }, 300);
     }
     
+    // Add initial bot message if needed
+    if (chatMessages.children.length === 0) {
+      const initialMessage = document.createElement('div');
+      initialMessage.className = 'chat-message bot-message';
+      initialMessage.textContent = getTimeBasedGreeting();
+      chatMessages.appendChild(initialMessage);
+    }
+    
     // Focus input after a small delay (allows animation to complete)
     setTimeout(() => {
       userInput.focus();
+      scrollToLatestMessage();
     }, 400);
-    
-    // Start with a clean slate
-    resetChatMessages();
   });
   
   // Close chatbot
@@ -1405,39 +1421,44 @@ function initMobileChatbot() {
     }
   });
   
-  // Handle the keyboard showing/hiding on mobile
+  // Handle keyboard visibility on mobile
   function handleKeyboardVisibility() {
     if (!isMobile()) return;
     
-    // Detect keyboard state change by comparing window height
+    // Detect keyboard state change via resize events
     window.addEventListener('resize', () => {
-      const newWindowHeight = window.innerHeight;
+      const newHeight = window.innerHeight;
       
-      // If the height is significantly smaller, keyboard is likely open
-      if (newWindowHeight < initialWindowHeight * 0.8) {
+      // If significant height reduction occurred, keyboard is likely open
+      if (newHeight < initialWindowHeight * 0.8) {
         if (!isKeyboardOpen) {
           isKeyboardOpen = true;
           chatbot.classList.add('keyboard-open');
           
-          // Calculate the approximate keyboard height
-          const keyboardHeight = initialWindowHeight - newWindowHeight;
+          // Calculate approximate keyboard height and set CSS variable
+          const keyboardHeight = initialWindowHeight - newHeight;
           document.documentElement.style.setProperty('--keyboard-height', `${keyboardHeight}px`);
           
-          // Scroll to the latest message
-          scrollToLatestMessage();
+          // Scroll to latest message with delay to account for layout shifts
+          setTimeout(scrollToLatestMessage, 300);
         }
-      } else if (isKeyboardOpen && newWindowHeight > initialWindowHeight * 0.8) {
+      } 
+      // If height is restored, keyboard is likely closed
+      else if (isKeyboardOpen && newHeight > initialWindowHeight * 0.8) {
         isKeyboardOpen = false;
         chatbot.classList.remove('keyboard-open');
         document.documentElement.style.removeProperty('--keyboard-height');
       }
     });
     
-    // Focus events can also help detect keyboard state
+    // Input focus detection (alternative method for keyboard detection)
     userInput.addEventListener('focus', () => {
       if (isMobile()) {
         setTimeout(() => {
+          // Force scroll to bottom when input is focused
           scrollToLatestMessage();
+          
+          // Add keyboard open class for CSS adjustments
           chatbot.classList.add('keyboard-open');
         }, 300);
       }
@@ -1452,33 +1473,10 @@ function initMobileChatbot() {
     });
   }
   
-  // Helper function to detect mobile devices
-  function isMobile() {
-    return window.innerWidth <= 768 || 
-           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
-  
   // Scroll to the latest message
   function scrollToLatestMessage() {
     if (chatMessages) {
       chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-  }
-  
-  // Reset chat messages (optional - remove if you want to keep history)
-  function resetChatMessages() {
-    if (chatMessages) {
-      // Keep only the initial greeting message or reset completely
-      // chatMessages.innerHTML = ''; // Uncomment to reset completely
-      
-      // Or keep just the initial greeting:
-      const botGreeting = document.createElement('div');
-      botGreeting.className = 'chat-message bot-message';
-      botGreeting.textContent = "Hi there! I'm Jarvis, Vathsaran's assistant. How can I help you today?";
-      chatMessages.innerHTML = '';
-      chatMessages.appendChild(botGreeting);
-      
-      scrollToLatestMessage();
     }
   }
   
@@ -1515,12 +1513,13 @@ function initMobileChatbot() {
       // Show typing indicator
       addTypingIndicator();
       
-      // Simulate response after a short delay
+      // Get response from the knowledge base
       setTimeout(() => {
         removeTypingIndicator();
         
-        // Generate a response (replace with your actual response function)
-        const response = "Thanks for your message! This is a placeholder response for demonstration purposes.";
+        // Get response from knowledge base (replace with your actual response function)
+        const response = getBotResponse ? getBotResponse(message) : 
+                        "Thanks for your message! This is a placeholder response for demonstration purposes.";
         
         // Add bot response
         addMessage(response, false);
@@ -1562,35 +1561,36 @@ function initMobileChatbot() {
     }
   }
   
-  // Initialize keyboard visibility handling
-  handleKeyboardVisibility();
+  // Generate greeting based on time of day
+  function getTimeBasedGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning! I'm Jarvis, Vathsaran's assistant. How can I help you today?";
+    else if (hour < 18) return "Good afternoon! I'm Jarvis, Vathsaran's assistant. How can I help you today?";
+    else return "Good evening! I'm Jarvis, Vathsaran's assistant. How can I help you today?";
+  }
   
-  // Handle safe area insets for iOS devices
+  // Setup safe area insets for iOS devices
   function setupSafeAreas() {
-    // Check if running on iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // Add metadata for iOS viewport
+    const existingViewport = document.querySelector('meta[name="viewport"]');
+    if (existingViewport) {
+      existingViewport.content = existingViewport.content + ',viewport-fit=cover';
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+      document.head.appendChild(meta);
+    }
     
+    // Add iOS detecting class if needed
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
-      // Add class to help with CSS targeting
       document.documentElement.classList.add('ios-device');
-      
-      // Apply safe area insets
-      document.head.insertAdjacentHTML('beforeend', `
-        <style>
-          .chat-input {
-            padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
-          }
-          
-          .chatbot {
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-          }
-        </style>
-      `);
     }
   }
   
-  // Call safe areas setup
+  // Call initialization functions
+  handleKeyboardVisibility();
   setupSafeAreas();
 }
 
