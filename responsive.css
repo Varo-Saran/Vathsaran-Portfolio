@@ -1325,6 +1325,14 @@
   .mobile-menu-toggle {
       display: none;
   }
+
+  .mobile-menu-overlay {
+      display: none !important;
+      transform: translateX(100%);
+      visibility: hidden;
+      opacity: 0;
+  }
+  
 }
 
 /* ==========================================================================
