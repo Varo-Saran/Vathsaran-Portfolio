@@ -1515,3 +1515,408 @@ function initMobileChatbot() {
 
 // Ensure the function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', initMobileChatbot);
+
+// Enhanced UI Features for Portfolio Website
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize UI enhancements
+    initScrollIndicator();
+    initSectionFadeIn();
+    enhanceBackToTopButton();
+    initPageLoader();
+    initTooltips();
+    initSkillBars();
+    initEnhancedCards();
+    initNotificationSystem();
+    addSkipToContentLink();
+    enhanceNavigation();
+});
+
+// Enhanced Navigation Effects
+function enhanceNavigation() {
+    // Get all navigation links
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    // Add active class to current page
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    navLinks.forEach(link => {
+      // Add hover effect with dynamic underline
+      link.addEventListener('mouseenter', function() {
+        // Create underline element if it doesn't exist
+        if (!this.querySelector('.nav-underline')) {
+          const underline = document.createElement('span');
+          underline.className = 'nav-underline';
+          underline.style.position = 'absolute';
+          underline.style.bottom = '0';
+          underline.style.left = '0';
+          underline.style.width = '0';
+          underline.style.height = '2px';
+          underline.style.background = 'linear-gradient(90deg, var(--primary-color), var(--accent-color))';
+          underline.style.transition = 'width 0.3s ease';
+          this.style.position = 'relative';
+          this.appendChild(underline);
+        }
+        
+        // Animate the underline
+        const underline = this.querySelector('.nav-underline');
+        underline.style.width = '100%';
+      });
+      
+      link.addEventListener('mouseleave', function() {
+        const underline = this.querySelector('.nav-underline');
+        if (underline && !this.classList.contains('active')) {
+          underline.style.width = '0';
+        }
+      });
+      
+      // Check if this is the active page
+      const href = link.getAttribute('href');
+      if (href === currentPage) {
+        link.classList.add('active');
+        
+        // Add permanent underline for active link
+        const underline = document.createElement('span');
+        underline.className = 'nav-underline active';
+        underline.style.position = 'absolute';
+        underline.style.bottom = '0';
+        underline.style.left = '0';
+        underline.style.width = '100%';
+        underline.style.height = '2px';
+        underline.style.background = 'linear-gradient(90deg, var(--primary-color), var(--accent-color))';
+        link.style.position = 'relative';
+        link.appendChild(underline);
+      }
+    });
+  }
+
+// Scroll Progress Indicator
+function initScrollIndicator() {
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.className = 'scroll-indicator';
+    document.body.appendChild(scrollIndicator);
+
+    window.addEventListener('scroll', function() {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        scrollIndicator.style.width = scrolled + '%';
+    });
+}
+
+// Fade-in sections on scroll
+function initSectionFadeIn() {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.classList.add('section-fade-in');
+    });
+
+    const checkIfInView = () => {
+        const sections = document.querySelectorAll('.section-fade-in');
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const isInView = (
+                rect.top <= window.innerHeight * 0.8 &&
+                rect.bottom >= 0
+            );
+            
+            if (isInView) {
+                section.classList.add('visible');
+            }
+        });
+    };
+
+    // Check on initial load
+    setTimeout(checkIfInView, 300);
+    
+    // Check on scroll
+    window.addEventListener('scroll', debounce(checkIfInView, 50));
+}
+
+// Enhanced Back-to-Top Button
+function enhanceBackToTopButton() {
+    const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+    if (scrollToTopBtn) {
+        scrollToTopBtn.classList.add('enhanced');
+        
+        window.addEventListener('scroll', function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+    }
+}
+
+// Page Loading Animation
+function initPageLoader() {
+    // Create loader element
+    const loader = document.createElement('div');
+    loader.className = 'page-loader';
+    loader.innerHTML = '<div class="loader-spinner"></div>';
+    document.body.appendChild(loader);
+    
+    // Hide loader when page is fully loaded
+    window.addEventListener('load', function() {
+        loader.classList.add('loader-hidden');
+        setTimeout(() => {
+            loader.remove();
+        }, 500);
+    });
+    
+    // For demo purposes, remove loader after a minimum time
+    setTimeout(() => {
+        loader.classList.add('loader-hidden');
+        setTimeout(() => {
+            loader.remove();
+        }, 500);
+    }, 1000);
+}
+
+// Tooltip Initialization
+function initTooltips() {
+    // Find elements with data-tooltip attribute
+    const tooltipElements = document.querySelectorAll('[data-tooltip]');
+    
+    tooltipElements.forEach(element => {
+        // Make the element a tooltip container
+        element.classList.add('tooltip');
+        
+        // Create tooltip text element
+        const tooltipText = document.createElement('span');
+        tooltipText.className = 'tooltip-text';
+        tooltipText.textContent = element.getAttribute('data-tooltip');
+        
+        // Add tooltip text to element
+        element.appendChild(tooltipText);
+    });
+}
+
+// Enhanced Skill Bars
+function initSkillBars() {
+    const skillBars = document.querySelectorAll('.skill-bar');
+    
+    skillBars.forEach(bar => {
+        bar.classList.add('enhanced');
+        
+        // Reset width to 0 initially
+        const originalWidth = bar.style.width;
+        bar.style.width = '0%';
+        
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Animate to original width when visible
+                    setTimeout(() => {
+                        bar.style.width = originalWidth;
+                    }, 200);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        observer.observe(bar);
+    });
+}
+
+// Enhanced Project Cards
+function initEnhancedCards() {
+    const projectCards = document.querySelectorAll('.project-card');
+    const techTags = document.querySelectorAll('.tech-tag');
+    
+    projectCards.forEach(card => {
+        card.classList.add('enhanced');
+    });
+    
+    techTags.forEach(tag => {
+        tag.classList.add('enhanced');
+    });
+}
+
+// Notification System
+function initNotificationSystem() {
+    // Create notification container if it doesn't exist
+    let notificationContainer = document.getElementById('notification-container');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notification-container';
+        notificationContainer.style.position = 'fixed';
+        notificationContainer.style.top = '20px';
+        notificationContainer.style.right = '20px';
+        notificationContainer.style.zIndex = '2000';
+        document.body.appendChild(notificationContainer);
+    }
+
+    // Add notification method to window for easy access
+    window.showNotification = function(message, type = 'info', duration = 5000) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        
+        // Set appropriate icon based on type
+        let icon = '';
+        switch(type) {
+            case 'success':
+                icon = '<i class="fas fa-check-circle notification-icon"></i>';
+                break;
+            case 'error':
+                icon = '<i class="fas fa-exclamation-circle notification-icon"></i>';
+                break;
+            case 'warning':
+                icon = '<i class="fas fa-exclamation-triangle notification-icon"></i>';
+                break;
+            case 'info':
+            default:
+                icon = '<i class="fas fa-info-circle notification-icon"></i>';
+                break;
+        }
+        
+        notification.innerHTML = `${icon}<span>${message}</span>`;
+        
+        // Add a futuristic style element
+        const glowLine = document.createElement('div');
+        glowLine.style.position = 'absolute';
+        glowLine.style.bottom = '0';
+        glowLine.style.left = '0';
+        glowLine.style.height = '2px';
+        glowLine.style.width = '0';
+        glowLine.style.transition = 'width 2s linear';
+        
+        // Set color based on notification type
+        switch(type) {
+            case 'success':
+                glowLine.style.background = 'linear-gradient(to right, transparent, #4CAF50, transparent)';
+                break;
+            case 'error':
+                glowLine.style.background = 'linear-gradient(to right, transparent, #F44336, transparent)';
+                break;
+            case 'warning':
+                glowLine.style.background = 'linear-gradient(to right, transparent, #FF9800, transparent)';
+                break;
+            case 'info':
+            default:
+                glowLine.style.background = 'linear-gradient(to right, transparent, #2196F3, transparent)';
+                break;
+        }
+        
+        notification.style.position = 'relative';
+        notification.style.overflow = 'hidden';
+        notification.appendChild(glowLine);
+        
+        notificationContainer.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+            glowLine.style.width = '100%'; // Start the progress indicator
+        }, 10);
+        
+        // Remove notification after duration
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, duration);
+};
+
+    // Show a welcome notification only on the first visit or homepage
+    setTimeout(() => {
+        // Check if we're on the homepage
+        const isHomePage = window.location.pathname === '/' || 
+                            window.location.pathname.endsWith('index.html') || 
+                            window.location.pathname === '/index' ||
+                            window.location.href.indexOf('index.html') > -1;
+        
+        // Check if welcome notification has been shown before
+        const hasShownWelcome = sessionStorage.getItem('welcomeShown');
+        
+        if ((isHomePage || !hasShownWelcome) && !hasShownWelcome) {
+            window.showNotification('Welcome to my portfolio!', 'info', 5000);
+            sessionStorage.setItem('welcomeShown', 'true');
+        }
+    }, 2000);
+
+    // Example usage:
+    // Uncomment the following line to test notification
+    // setTimeout(() => { window.showNotification('Welcome to my portfolio!', 'info', 5000); }, 2000);
+}
+
+// Add Skip to Content Link for Accessibility
+function addSkipToContentLink() {
+    const skipLink = document.createElement('a');
+    skipLink.className = 'skip-to-content';
+    skipLink.href = '#main-content';
+    skipLink.textContent = 'Skip to content';
+    document.body.insertBefore(skipLink, document.body.firstChild);
+    
+    // Add ID to main content area if not present
+    const mainContent = document.querySelector('main');
+    if (mainContent && !mainContent.id) {
+        mainContent.id = 'main-content';
+    }
+}
+
+// Apply Gradient Text to Headings
+function applyGradientTextToHeadings() {
+    // Apply to specific headings
+    const headings = document.querySelectorAll('.section h2, .hero h2');
+    headings.forEach(heading => {
+        heading.classList.add('gradient-text');
+    });
+}
+
+// Enhance Form Elements
+function enhanceFormElements() {
+    // Add animated label effect to form inputs
+    const formGroups = document.querySelectorAll('.form-group');
+    
+    formGroups.forEach(group => {
+        const input = group.querySelector('input, textarea');
+        const label = group.querySelector('label');
+        
+        if (input && label) {
+            // Move label inside input wrapper
+            const inputWrapper = document.createElement('div');
+            inputWrapper.className = 'input-wrapper';
+            input.parentNode.insertBefore(inputWrapper, input);
+            inputWrapper.appendChild(input);
+            inputWrapper.appendChild(label);
+            
+            // Add floating label class
+            label.classList.add('floating-label');
+            
+            // Check initial state
+            if (input.value) {
+                label.classList.add('active');
+            }
+            
+            // Add event listeners
+            input.addEventListener('focus', () => {
+                label.classList.add('active');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    label.classList.remove('active');
+                }
+            });
+        }
+    });
+}
+
+// Helper function: Debounce
+function debounce(func, wait = 20, immediate = false) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        const later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}
