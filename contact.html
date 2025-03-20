@@ -117,11 +117,8 @@
     <script src="script.js"></script>
     
     <!-- Chatbot -->
-    <button id="chatbotToggle" class="chatbot-toggle">
-        <i class="fas fa-comments"></i>
-    </button>
-    
     <div id="chatbot" class="chatbot">
+        <!-- Chat Header -->
         <div class="chat-header">
             <div class="chat-title">
                 <i class="fas fa-robot"></i>
@@ -133,7 +130,16 @@
                 </button>
             </div>
         </div>
-        <div id="chatMessages" class="chat-messages"></div>
+    
+        <!-- Chat Messages Area -->
+        <div id="chatMessages" class="chat-messages">
+            <!-- Initial Bot Message -->
+            <div class="chat-message bot-message">
+                Hey boss! iXiA mini at your service. How may I assist you on you today?
+            </div>
+        </div>
+    
+        <!-- Chat Input Area -->
         <div class="chat-input">
             <input 
                 type="text" 

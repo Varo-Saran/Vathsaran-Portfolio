@@ -243,21 +243,42 @@
     <script src="script.js"></script>
     
     <!-- Chatbot -->
-<button id="chatbotToggle" class="chatbot-toggle">
-    <i class="fas fa-comments"></i>
-  </button>
-  
-  <div id="chatbot" class="chatbot">
-    <div class="chat-header">
-      <span><i class="fas fa-robot"></i> Chat with Vathsaran</span>
-      <button id="closeChatbot"><i class="fas fa-times"></i></button>
+    <div id="chatbot" class="chatbot">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                <span>Chat with Vathsaran</span>
+            </div>
+            <div class="button-wrapper">
+                <button id="closeChatbot" class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    
+        <!-- Chat Messages Area -->
+        <div id="chatMessages" class="chat-messages">
+            <!-- Initial Bot Message -->
+            <div class="chat-message bot-message">
+                Hey boss! iXiA mini at your service. How may I assist you on you today?
+            </div>
+        </div>
+    
+        <!-- Chat Input Area -->
+        <div class="chat-input">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Type a message..."
+                aria-label="Type your message"
+                autocomplete="off"
+            >
+            <button id="sendMessage" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
-    <div id="chatMessages" class="chat-messages"></div>
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Type a message...">
-      <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
   
   <!-- Scroll-to-Top Button -->
   <button id="scrollToTopBtn" title="Go to top">
