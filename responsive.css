@@ -650,12 +650,18 @@
   }
 
   .keyboard-open .chat-header {
-      /* Ensure header stays visible */
+      /* Ensure header stays visible and maintains exact dimensions */
       position: sticky;
       top: 0;
       width: 100%;
       z-index: 2010;
+      padding: 15px 20px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
   }
+
 
   body.keyboard-open {
       overflow: hidden;
