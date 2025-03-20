@@ -1385,13 +1385,20 @@ function initMobileChatbot() {
                 if (!isKeyboardOpen) {
                     isKeyboardOpen = true;
                     chatbot.classList.add('keyboard-open');
+                    document.body.classList.add('keyboard-open');
                     const keyboardHeight = initialWindowHeight - newHeight;
                     document.documentElement.style.setProperty('--keyboard-height', `${keyboardHeight}px`);
-                    setTimeout(scrollToLatestMessage, 300);
+                    setTimeout(() => {
+                        scrollToLatestMessage();
+                        // Ensure chat input is visible by scrolling to it if needed
+                        const chatInput = document.querySelector('.chat-input');
+                        if (chatInput) chatInput.scrollIntoView(false);
+                    }, 300);
                 }
             } else if (isKeyboardOpen && newHeight > initialWindowHeight * 0.8) {
                 isKeyboardOpen = false;
                 chatbot.classList.remove('keyboard-open');
+                document.body.classList.remove('keyboard-open');
                 document.documentElement.style.removeProperty('--keyboard-height');
             }
         });
@@ -1399,15 +1406,19 @@ function initMobileChatbot() {
         userInput.addEventListener('focus', () => {
             if (isMobile()) {
                 setTimeout(() => {
-                    scrollToLatestMessage();
                     chatbot.classList.add('keyboard-open');
+                    document.body.classList.add('keyboard-open');
+                    scrollToLatestMessage();
                 }, 300);
             }
         });
 
         userInput.addEventListener('blur', () => {
             if (isMobile()) {
-                setTimeout(() => chatbot.classList.remove('keyboard-open'), 100);
+                setTimeout(() => {
+                    chatbot.classList.remove('keyboard-open');
+                    document.body.classList.remove('keyboard-open');
+                }, 100);
             }
         });
     }
