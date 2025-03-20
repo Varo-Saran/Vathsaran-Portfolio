@@ -1319,7 +1319,7 @@ function resetChatbotContext() {
 }
 
 /**
- * Initializes mobile chatbot functionality
+ * Initializes mobile chatbot functionality with consistent behavior across all pages
  */
 function initMobileChatbot() {
     const chatbotToggle = document.getElementById('chatbotToggle');
@@ -1329,16 +1329,33 @@ function initMobileChatbot() {
     const userInput = document.getElementById('userInput');
     const sendMessageBtn = document.getElementById('sendMessage');
 
-    if (!chatbot || !chatbotToggle) return;
+    // If chatbot elements don't exist, exit early
+    if (!chatbot || !closeChatbotBtn) return;
 
+    // Create chatbot toggle button if it doesn't exist (for non-home pages)
+    if (!chatbotToggle) {
+        const newChatbotToggle = document.createElement('button');
+        newChatbotToggle.id = 'chatbotToggle';
+        newChatbotToggle.className = 'chatbot-toggle';
+        newChatbotToggle.innerHTML = '<i class="fas fa-comments"></i>';
+        document.body.appendChild(newChatbotToggle);
+        
+        // Update the reference
+        chatbotToggleBtn = newChatbotToggle;
+    } else {
+        chatbotToggleBtn = chatbotToggle;
+    }
+
+    // Make sure the chatbot is initially hidden and toggle is visible
     chatbot.style.display = 'none';
-    chatbotToggle.style.display = 'flex';
+    chatbotToggleBtn.style.display = 'flex';
 
     const isMobile = () => window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    chatbotToggle.addEventListener('click', () => {
+    // Open chatbot
+    chatbotToggleBtn.addEventListener('click', () => {
         chatbot.style.display = 'flex';
-        chatbotToggle.style.display = 'none';
+        chatbotToggleBtn.style.display = 'none';
 
         if (isMobile()) {
             document.body.classList.add('chatbot-open');
@@ -1346,6 +1363,7 @@ function initMobileChatbot() {
             setTimeout(() => chatbot.classList.remove('opening'), 300);
         }
 
+        // Add initial message if the chat is empty
         if (chatMessages.children.length === 0) {
             const initialMessage = document.createElement('div');
             initialMessage.className = 'chat-message bot-message';
@@ -1359,18 +1377,19 @@ function initMobileChatbot() {
         }, 400);
     });
 
+    // Close chatbot
     closeChatbotBtn.addEventListener('click', () => {
         if (isMobile()) {
             chatbot.classList.add('closing');
             setTimeout(() => {
                 chatbot.style.display = 'none';
-                chatbotToggle.style.display = 'flex';
+                chatbotToggleBtn.style.display = 'flex';
                 chatbot.classList.remove('closing');
                 document.body.classList.remove('chatbot-open');
             }, 300);
         } else {
             chatbot.style.display = 'none';
-            chatbotToggle.style.display = 'flex';
+            chatbotToggleBtn.style.display = 'flex';
         }
     });
 
@@ -1494,4 +1513,5 @@ function initMobileChatbot() {
     setupSafeAreas();
 }
 
+// Ensure the function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', initMobileChatbot);
