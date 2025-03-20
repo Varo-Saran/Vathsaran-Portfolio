@@ -37,25 +37,43 @@ body {
   --hover-bg-color: rgba(0, 191, 255, 0.1);
 }
 
+/* New Light Theme Overrides */
 /* Light theme overrides */
 [data-theme="light"] {
-  --primary-color: #2D82B7;      /* Rich Blue */
-  --secondary-color: #1E88E5;    /* Bright Medium Blue */
-  --background-color: #F8FCFF;   /* Softer White with hint of blue */
-  --text-color: #1A365D;         /* Deep Navy */
-  --accent-color: #42A5F5;       /* Bright Sky Blue */
-  --card-bg-color: rgba(66, 165, 245, 0.05);
-  --border-color: #2196F3;       /* Brighter border */
-  --shadow-color: rgba(33, 150, 243, 0.2);
-  --hover-bg-color: rgba(66, 165, 245, 0.1);
-  --heading-color: #0D47A1;      /* Deep Blue for headings */
-  --subheading-color: #1565C0;   /* Medium Blue for subheadings */
-  --particle-color1: #42A5F5;    /* Particle color 1 */
-  --particle-color2: #2196F3;    /* Particle color 2 */
-  --particle-color3: #1976D2;    /* Particle color 3 */
-  --link-color: #1976D2;         /* Link color */
-  --link-hover-color: #2962FF;   /* Link hover color */
+  --primary-color: #00897B;         /* Teal */
+  --secondary-color: #26A69A;       /* Lighter Teal */
+  --background-color: #FFFAF0;      /* Floral White - warmer than current */
+  --text-color: #2D3E50;            /* Dark Slate - good contrast with background */
+  --accent-color: #4DB6AC;          /* Bright Teal */
+  --card-bg-color: rgba(77, 182, 172, 0.05); /* Light teal tint for cards */
+  --border-color: #009688;          /* Teal border */
+  --shadow-color: rgba(0, 150, 136, 0.2); /* Subtle teal shadow */
+  --hover-bg-color: rgba(77, 182, 172, 0.1); /* Slightly darker teal on hover */
+  --heading-color: #00695C;         /* Dark Teal for headings */
+  --subheading-color: #00796B;      /* Medium Teal for subheadings */
+  --particle-color1: #4DB6AC;       /* Particle color 1 (Bright Teal) */
+  --particle-color2: #009688;       /* Particle color 2 (Teal border) */
+  --particle-color3: #00796B;       /* Particle color 3 (Medium Teal) */
+  --link-color: #00796B;            /* Link color (Medium Teal) */
+  --link-hover-color: #004D40;      /* Link hover color (Darker Teal) */
+  --header-bg: rgba(255, 250, 240, 0.97); /* Header background */
+  --search-input-bg: rgba(0, 150, 136, 0.1); /* Search input background */
+  --search-placeholder: rgba(45, 62, 80, 0.5); /* Search placeholder */
+  --chatbot-bg: rgba(255, 250, 240, 0.92); /* Chatbot background */
+  --chat-header-bg: rgba(0, 137, 123, 0.97); /* Chat header background */
+  --chat-message-bg: rgba(77, 182, 172, 0.08); /* Chat message background */
+  --user-message-bg: rgba(0, 150, 136, 0.12); /* User message background */
+  --chat-input-bg: rgba(255, 250, 240, 0.97); /* Chat input background */
+  --footer-bg: rgba(0, 121, 107, 0.05); /* Footer background */
+  --scrollbar-track: rgba(255, 250, 240, 0.5); /* Scrollbar track */
 }
+
+
+
+
+
+
+
 
 /* ==========================================================================
  Theme Transitions
@@ -184,9 +202,9 @@ nav {
 
 /* Light theme adjustments for header */
 [data-theme="light"] header {
-  background: rgba(248, 252, 255, 0.97);
+  background: var(--header-bg);
   border-bottom: 1px solid var(--primary-color);
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 [data-theme="light"] .logo {
@@ -374,23 +392,23 @@ nav {
 
 [data-theme="light"] .mobile-menu-toggle:hover span {
   background: var(--accent-color);
-  box-shadow: 0 0 5px var(--accent-color);
+  box-shadow: 0 0 5px var(--glow-color);
 }
 
 [data-theme="light"] .mobile-menu-toggle.active span:nth-child(1) {
   background: var(--accent-color);
-  box-shadow: 0 0 5px var(--accent-color);
+  box-shadow: 0 0 5px var(--glow-color);
 }
 
 [data-theme="light"] .mobile-menu-toggle.active span:nth-child(3) {
   background: var(--accent-color);
-  box-shadow: 0 0 5px var(--accent-color);
+  box-shadow: 0 0 5px var(--glow-color);
 }
 
 [data-theme="light"] .mobile-menu-overlay {
-  background: rgba(248, 252, 255, 0.98);
+  background: var(--header-bg);
   border-left: 2px solid var(--primary-color);
-  box-shadow: -8px 0 30px rgba(33, 150, 243, 0.15);
+  box-shadow: -8px 0 30px var(--shadow-color);
 }
 
 [data-theme="light"] .mobile-menu-close {
@@ -500,7 +518,7 @@ nav {
 
 /* Light theme mobile toggle adjustments */
 [data-theme="light"] .mobile-theme-toggle-container {
-  background: rgba(66, 165, 245, 0.05);
+  background: var(--card-bg-color);
   border: 1px solid var(--primary-color);
 }
 
@@ -511,12 +529,12 @@ nav {
 [data-theme="light"] .mobile-theme-toggle {
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
-  box-shadow: 0 0 10px var(--primary-color);
+  box-shadow: 0 0 10px var(--glow-color);
 }
 
 [data-theme="light"] .mobile-theme-toggle:hover {
   border-color: var(--accent-color);
-  box-shadow: 0 0 20px var(--accent-color);
+  box-shadow: 0 0 20px var(--glow-color);
 }
 
 /* ==========================================================================
@@ -663,13 +681,13 @@ nav {
 
 /* Light theme search adjustments */
 [data-theme="light"] .search-input {
-  background-color: rgba(0, 149, 200, 0.1);
+  background-color: var(--search-input-bg);
   border-color: var(--primary-color);
   color: var(--text-color);
 }
 
 [data-theme="light"] .search-input::placeholder {
-  color: rgba(0, 30, 60, 0.5);
+  color: var(--search-placeholder);
 }
 
 [data-theme="light"] .search-suggestions {
@@ -1078,11 +1096,11 @@ main {
 [data-theme="light"] .hologram {
   background-color: rgba(66, 165, 245, 0.04);
   border: 1px solid var(--primary-color);
-  box-shadow: 0 2px 12px rgba(33, 150, 243, 0.1);
+  box-shadow: 0 2px 12px var(--shadow-color);
 }
 
 [data-theme="light"] .hologram:hover {
-  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+  box-shadow: 0 4px 15px var(--shadow-color);
   transform: translateY(-3px);
 }
 
@@ -1372,7 +1390,7 @@ p {
 
 /* Light theme skills adjustments */
 [data-theme="light"] .skill-bar-container {
-  background: rgba(0, 149, 200, 0.1);
+  background: var(--search-input-bg);
 }
 
 .additional-skills-grid {
@@ -1547,6 +1565,12 @@ p {
   color: var(--text-color);
 }
 
+[data-theme="light"] .filter-btn.active {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  box-shadow: 0 0 15px var(--glow-color);
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1635,12 +1659,12 @@ p {
 
 /* Light theme project card adjustments */
 [data-theme="light"] .project-card {
-  background-color: rgba(66, 165, 245, 0.04);
+  background-color: var(--card-bg-color);
   border: 1px solid var(--border-color);
 }
 
 [data-theme="light"] .tech-tag {
-  background-color: rgba(33, 150, 243, 0.1);
+  background-color: var(--user-message-bg);
   color: var(--heading-color);
   border: 1px solid rgba(33, 150, 243, 0.2);
 }
@@ -1974,10 +1998,10 @@ footer p {
 
 /* Light theme footer adjustments */
 [data-theme="light"] footer {
-  background: rgba(25, 118, 210, 0.05);
+  background: var(--footer-bg);
   border-top: 1px solid var(--primary-color);
   color: var(--text-color);
-  box-shadow: 0 -2px 10px rgba(33, 150, 243, 0.1);
+  box-shadow: 0 -2px 10px var(--shadow-color);
 }
 
 [data-theme="light"] footer::before {
@@ -2230,13 +2254,13 @@ footer p {
 
 /* Light theme chatbot adjustments */
 [data-theme="light"] .chatbot {
-  background-color: rgba(248, 252, 255, 0.92);
+  background-color: var(--chatbot-bg);
   border-color: var(--primary-color);
-  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+  box-shadow: 0 4px 20px var(--shadow-color);
 }
 
 [data-theme="light"] .chat-header {
-  background-color: rgba(45, 130, 183, 0.97);
+  background-color: var(--chat-header-bg);
   color: white;
   border-bottom: 1px solid var(--primary-color);
 }
@@ -2250,40 +2274,40 @@ footer p {
 }
 
 [data-theme="light"] .chat-message {
-  background-color: rgba(66, 165, 245, 0.08);
+  background-color: var(--chat-message-bg);
   border: 1px solid rgba(66, 165, 245, 0.2);
   color: var(--text-color);
-  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
 }
 
 [data-theme="light"] .user-message {
-  background-color: rgba(33, 150, 243, 0.12);
+  background-color: var(--user-message-bg);
   border-color: rgba(33, 150, 243, 0.3);
 }
 
 [data-theme="light"] .chat-input {
-  background-color: rgba(248, 252, 255, 0.97);
+  background-color: var(--chat-input-bg);
   border-top: 1px solid var(--primary-color);
 }
 
 [data-theme="light"] .chat-input:focus-within {
   background-color: rgba(248, 252, 255, 0.97);
-  box-shadow: 0 -5px 15px rgba(33, 150, 243, 0.1);
+  box-shadow: 0 -5px 15px ar(--shadow-color);
 }
 
 [data-theme="light"] .chat-input input {
-  background-color: rgba(66, 165, 245, 0.05);
+  background-color: var(--card-bg-color);
   border: 1px solid var(--primary-color);
   color: var(--text-color);
 }
 
 [data-theme="light"] .chat-input input::placeholder {
-  color: rgba(26, 54, 93, 0.5);
+  color: var(--search-placeholder);
 }
 
 [data-theme="light"] .chat-input input:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-color);
+  box-shadow: 0 0 10px var(--glow-color);
   outline: none;
 }
 
@@ -2405,7 +2429,7 @@ footer p {
 }
 
 [data-theme="light"] #particles-js::after {
-  background: linear-gradient(45deg, rgba(248, 252, 255, 0.7) 0%, rgba(248, 252, 255, 0.5) 100%);
+  background: linear-gradient(45deg, var(--header-bg) 0%, var(--chatbot-bg) 100%);
 }
 
 /* Background Gradient */
@@ -2428,7 +2452,7 @@ footer p {
 }
 
 [data-theme="light"]::-webkit-scrollbar-track {
-  background: rgba(245, 251, 255, 0.5);
+  background: var(--scrollbar-track);
 }
 
 /* ==========================================================================
