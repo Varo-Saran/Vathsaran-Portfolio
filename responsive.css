@@ -610,19 +610,51 @@
   }
 
   .keyboard-open .chat-messages {
-      height: calc(100% - 130px - var(--keyboard-height, 0px));
+      /* Allow messages area to shrink while remaining scrollable */
+      flex: 1;
+      height: auto;
+      max-height: calc(100vh - 130px - var(--keyboard-height, 0px));
+      overflow-y: auto;
+      padding-bottom: 15px;
   }
 
   .keyboard-open .chat-input {
-      position: fixed;
+      /* Keep input just above keyboard */
+      position: absolute;
       bottom: var(--keyboard-height, 0px);
+      left: 0;
+      right: 0;
       padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
       width: 100%;
       box-sizing: border-box;
+      background-color: rgba(0, 8, 20, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 2005;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
   }
 
   .chatbot.keyboard-open {
+      /* Keep the chatbot in a fixed position instead of pushing it up */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       height: 100%;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 2001;
+  }
+
+  .keyboard-open .chat-header {
+      /* Ensure header stays visible */
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 2010;
   }
 
   body.keyboard-open {

@@ -934,6 +934,29 @@ main {
   display: none; /* Removed overlay */
 }
 
+.slider-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+/* Light theme slider dots adjustments */
+[data-theme="light"] .slider-dot {
+  background: rgba(33, 150, 243, 0.3);
+  border: 1px solid rgba(33, 150, 243, 0.5);
+}
+
+[data-theme="light"] .slider-dot.active {
+  background: var(--primary-color);
+  transform: scale(1.2);
+  box-shadow: 0 0 10px var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+[data-theme="light"] .slider-dot:hover {
+  background: rgba(33, 150, 243, 0.6);
+  transform: scale(1.1);
+}
+
 /* ==========================================================================
  Buttons
  ========================================================================== */
