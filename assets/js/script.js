@@ -1520,13 +1520,17 @@ function initMobileChatbot() {
 /**
  * Initializes touch functionality for hologram frames
  */
+/**
+ * Enhanced initialization for hologram frames with bottom-to-top lifting effect
+ * Replace your existing initHologramFrames function with this one
+ */
 function initHologramFrames() {
     const frames = document.querySelectorAll('.hologram-frame');
-    console.log('Found hologram frames:', frames.length); // Debug
+    console.log('Found hologram frames:', frames.length);
     
     if (!frames.length) return;
     
-    // Ensure the proper styles are added for z-index interactions
+    // Add CSS for touch-device handling
     document.head.insertAdjacentHTML('beforeend', `
       <style>
         /* Fix for interaction issues */
@@ -1540,8 +1544,28 @@ function initHologramFrames() {
           pointer-events: auto !important;
         }
         
+        /* Ensure the hologram effects are visible during transition */
         .hologram-overlay {
           pointer-events: none !important;
+        }
+        
+        /* Enhanced hover/active state for hologram frame */
+        .hologram-frame.touch-active {
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
+                      0 0 30px var(--primary-color), 
+                      0 0 40px rgba(0, 191, 255, 0.3) inset;
+          transform: translateY(-10px) scale(1.02);
+        }
+        
+        /* Random glitch animation */
+        @keyframes glitchAnimation {
+          0% { opacity: 1; }
+          10% { opacity: 0.8; transform: translate(-2px, 1px); }
+          20% { opacity: 1; transform: translate(0); }
+          30% { opacity: 1; }
+          35% { opacity: 0.9; transform: translate(1px, -1px); }
+          40% { opacity: 1; transform: translate(0); }
+          100% { opacity: 1; }
         }
       </style>
     `);
@@ -1557,75 +1581,117 @@ function initHologramFrames() {
       // For mobile/touch devices
       let touchActive = false;
       
-      // Click for desktop and touch for mobile
-      frame.addEventListener('click', function(e) {
-        console.log('Frame clicked'); // Debug
-        touchActive = !touchActive;
-        
-        if (touchActive) {
-          this.classList.add('touch-active');
-        } else {
-          this.classList.remove('touch-active');
-        }
-      });
+      // Add random scan line animation adjustment
+      const scanLine = frame.querySelector('.hologram-scan-line');
+      if (scanLine) {
+        // Randomize animation delay for more realistic effect
+        scanLine.style.animationDelay = `${Math.random() * -2}s`;
+      }
       
-      // Add random glitch effect
-      const glitchInterval = setInterval(() => {
-        if (Math.random() > 0.7) {
-          const glitch = frame.querySelector('.hologram-glitch');
-          if (glitch) {
-            glitch.style.opacity = Math.random() * 0.2;
-            
-            setTimeout(() => {
-              glitch.style.opacity = '1';
-            }, 100 + Math.random() * 200);
-          }
-        }
-      }, 2000);
-      
-      // Add subtle movement on mouse move (for desktop)
-      frame.addEventListener('mousemove', function(e) {
-        // Check if we're not on mobile
-        if (window.innerWidth > 768) {
-          const rect = this.getBoundingClientRect();
-          const x = e.clientX - rect.left; // x position within the element
-          const y = e.clientY - rect.top;  // y position within the element
-          
-          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
-          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
-          
-          this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
-        }
-      });
-      
-      // Reset transform on mouse out
-      frame.addEventListener('mouseout', function() {
-        this.style.transform = '';
-      });
-      
-      // Cleanup function for when the component is unmounted
-      return () => {
-        clearInterval(glitchInterval);
-        frame.removeEventListener('mousemove');
-        frame.removeEventListener('mouseout');
-        frame.removeEventListener('click');
-      };
-    });
-  }
-  
-  // Make sure this function is called when the DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
-    initHologramFrames();
+      // Click handler for touch devices
+frame.addEventListener('click', function(e) {
+    console.log('Frame clicked'); 
     
-    // Also call it again after a short delay to ensure it works
-    // This helps with frameworks or dynamic content loading
-    setTimeout(initHologramFrames, 1000);
+    // Toggle active state
+    touchActive = !touchActive;
+    
+    if (touchActive) {
+      this.classList.add('touch-active');
+      
+      // Add lifting sound effect for immersion (optional)
+      const liftSound = new Audio();
+      liftSound.volume = 0.3;
+      try {
+        liftSound.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAASAAAeMwAUFBQUFCIiIiIiIjAwMDAwMD4+Pj4+PkxMTExMTFpaWlpaWmhoaGhoaHZ2dnZ2doSEhISEhJKSkpKSkqCgoKCgoK6urq6urrKysr6+vr6+vsbGxsbGxtDQ0NDQ0N7e3t7e3urq6urq6vLy8vLy8v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/vr6+vr6+v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v/+xDEAAPAAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABP7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+';
+        liftSound.play().catch(e => console.log('Could not play audio effect'));
+      } catch(e) {
+        // Fail silently - audio is optional
+      }
+    } else {
+      this.classList.remove('touch-active');
+    }
   });
+
+// Add random glitch effect
+const glitchInterval = setInterval(() => {
+  if (Math.random() > 0.7) {
+    const glitch = frame.querySelector('.hologram-glitch');
+    if (glitch) {
+      // Trigger glitch animation
+      glitch.style.animation = 'glitchAnimation 0.3s ease';
+      
+      // Random opacity flicker
+      glitch.style.opacity = Math.random() * 0.3;
+      
+      // Reset after glitch effect
+      setTimeout(() => {
+        glitch.style.animation = '';
+        glitch.style.opacity = '0.7';
+      }, 300 + Math.random() * 200);
+    }
+  }
+}, 3000);
+
+// Add subtle 3D effect on mouse move (for desktop only)
+frame.addEventListener('mousemove', function(e) {
+  // Check if we're not on mobile
+  if (window.innerWidth > 768) {
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX - rect.left; // x position within the element
+    const y = e.clientY - rect.top;  // y position within the element
+    
+    // Calculate rotation based on mouse position
+    const xRotation = 5 * ((y - rect.height / 2) / rect.height);
+    const yRotation = -5 * ((x - rect.width / 2) / rect.width);
+    
+    // Apply subtle 3D rotation effect
+    this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
+    
+    // Adjust the overlay lifting based on mouse Y position
+    const overlay = this.querySelector('.hologram-overlay');
+    if (overlay && !this.classList.contains('touch-active')) {
+      // Calculate lift progress based on mouse Y position
+      const progressY = Math.min(100, Math.max(0, ((rect.height - y) / rect.height) * 120));
+      overlay.style.transform = `translateY(-${progressY}%)`;
+    }
+  }
+});
+
+// Reset transform and overlay on mouse out
+frame.addEventListener('mouseout', function() {
+  this.style.transform = '';
   
-  // Optionally reinitialize on window resize
-  window.addEventListener('resize', debounce(function() {
-    initHologramFrames();
-  }, 200));
+  // Reset overlay if not in touch-active state
+  if (!this.classList.contains('touch-active')) {
+    const overlay = this.querySelector('.hologram-overlay');
+    if (overlay) {
+      overlay.style.transform = '';
+    }
+  }
+});
+
+// Cleanup function for when the component is unmounted
+return () => {
+  clearInterval(glitchInterval);
+  frame.removeEventListener('mousemove');
+  frame.removeEventListener('mouseout');
+  frame.removeEventListener('click');
+};
+});
+}
+
+// Ensure the function runs when the DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  initHologramFrames();
+  
+  // Also call it after a short delay to ensure it works with dynamic content
+  setTimeout(initHologramFrames, 1000);
+});
+
+// Re-initialize on window resize to handle orientation changes
+window.addEventListener('resize', function() {
+  setTimeout(initHologramFrames, 200);
+});
   
   // Make sure this function is called when the DOM is ready
   document.addEventListener('DOMContentLoaded', function() {

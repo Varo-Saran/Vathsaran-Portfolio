@@ -1125,19 +1125,34 @@ main {
  Welcome Section & Hologram Frame
  ========================================================================== */
 
- /* ==========================================================================
- Welcome Section & Hologram Frame
- ========================================================================== */
-
  .welcome-layout {
   padding: 60px 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
   justify-content: center;
-  align-items: stretch; /* Changed from center to stretch */
+  align-items: stretch;
   margin: 0 auto;
   max-width: 1200px;
+  position: relative;
+}
+
+.profile-hologram {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.welcome-text {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
 }
 
@@ -1152,26 +1167,7 @@ main {
   line-height: 1.6;
 }
 
-.profile-hologram {
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px;
-  margin: 0 auto;
-  transition: transform 0.5s ease; /* Smooth transform */
-  position: relative;
-}
-
-.welcome-text {
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px; /* Added max-width to balance with image */
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center content vertically */
-  position: relative;
-}
-
+/* Hologram Frame */
 .hologram-frame {
   width: 100%;
   height: 450px;
@@ -1179,14 +1175,13 @@ main {
   overflow: hidden;
   border-radius: 12px;
   background: rgba(0, 8, 20, 0.5);
-  box-shadow: 
-    0 0 15px var(--primary-color),
-    0 0 30px rgba(0, 191, 255, 0.3) inset;
+  box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(0, 191, 255, 0.3) inset;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform-style: preserve-3d;
   perspective: 1000px;
   margin: 0 auto;
-  cursor: pointer; /* Add cursor to indicate interactivity */
+  cursor: pointer;
+  z-index: 20;
 }
 
 .hologram-frame::before {
@@ -1210,45 +1205,44 @@ main {
 .hologram-frame::after {
   content: '';
   position: absolute;
-  width: 120%;
-  height: 100px;
-  background: linear-gradient(rgba(0, 191, 255, 0.2), transparent);
-  left: -10%;
-  top: -150%;
-  transform: rotate(45deg);
-  transition: top 0.6s ease;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(0, 191, 255, 0.1); /* Very subtle inset shadow to maintain visible border */
+  z-index: 10;
 }
 
 .hologram-frame:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 
-    0 15px 30px rgba(0, 0, 0, 0.4),
-    0 0 30px var(--primary-color),
-    0 0 40px rgba(0, 191, 255, 0.3) inset;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 30px var(--primary-color), 0 0 40px rgba(0, 191, 255, 0.3) inset;
 }
 
 .hologram-frame:hover::before {
   opacity: 1;
 }
 
-.hologram-frame:hover::after {
-  top: 200%;
-}
-
 .hologram-container {
   position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
+/* Hologram Image */
 .hologram-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top; /* Ensures face isn't cut off */
+  object-position: center top;
   display: block;
-  transition: transform 0.5s ease, filter 0.5s ease;
+  transition: transform 0.8s ease, filter 0.8s ease;
   position: relative;
+  filter: brightness(0.85) contrast(0.95);
+  border-radius: 12px;
 }
 
 .hologram-frame:hover .hologram-image,
@@ -1257,7 +1251,7 @@ main {
   filter: contrast(110%) brightness(110%);
 }
 
-/* Improved hover effect for the hologram */
+/* Hologram Overlay with Shutter Effect */
 .hologram-overlay {
   position: absolute;
   top: 0;
@@ -1272,33 +1266,52 @@ main {
   );
   backdrop-filter: blur(2px);
   transform: translate3d(0, 0, 0);
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease;
-  opacity: 1;
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 5;
+  pointer-events: none;
+  border-radius: 12px;
+  /* Bottom border to show lifting mechanism */
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 -5px 15px rgba(0, 191, 255, 0.3);
 }
 
-/* When hovered, slide the overlay down and reduce opacity */
+.hologram-overlay::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--primary-color);
+  box-shadow: 0 0 20px 5px var(--primary-color);
+  opacity: 0.7;
+}
+
+/* Shutter opens horizontally on hover */
 .hologram-frame:hover .hologram-overlay,
 .hologram-frame.touch-active .hologram-overlay {
-  transform: translateY(100%);
-  opacity: 0;
+  transform: translateY(-100%);
 }
 
+/* Scan Line Effect */
 .hologram-scan-line {
   position: absolute;
   width: 100%;
   height: 2px;
-  background: rgba(0, 191, 255, 0.8);
-  box-shadow: 0 0 10px var(--accent-color);
-  top: 0;
+  background: rgba(0, 191, 255, 0.9);
+  box-shadow: 0 0 15px var(--accent-color);
+  bottom: 0; /* Start from bottom */
   left: 0;
-  animation: scan 2s linear infinite;
+  animation: scan-bottom-to-top 2s linear infinite;
+  z-index: 6;
 }
 
-@keyframes scan-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+@keyframes scan-bottom-to-top {
+  0% { bottom: 0%; }
+  100% { bottom: 100%; }
 }
 
+/* Glitch Effect */
 .hologram-glitch {
   position: absolute;
   top: 0;
@@ -1311,29 +1324,30 @@ main {
     rgba(0, 191, 255, 0.05) 3px,
     rgba(0, 191, 255, 0.05) 3px
   );
+  z-index: 4;
+  opacity: 0.7;
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
-@keyframes glitch {
-    0%, 20%, 40%, 60%, 80% { opacity: 0; }
-    10%, 30%, 50%, 70% { opacity: 0.2; }
-}
-
+/* Hologram Data Display */
 .hologram-data {
   position: absolute;
   bottom: 20px;
   left: 20px;
   right: 20px;
   color: #fff;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
   opacity: 1;
   transform: translateY(0);
   pointer-events: none;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7); /* Darker shadow for better contrast */
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+  z-index: 7;
 }
 
 .hologram-frame:hover .hologram-data {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(-20px); /* Move up as overlay lifts */
 }
 
 .hologram-title {
@@ -1350,50 +1364,14 @@ main {
   opacity: 0.9;
   font-family: 'Arial', sans-serif;
   letter-spacing: 0.5px;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8); /* Add shadow for readability */
-  font-weight: 500; /* Semi-bold for better visibility */
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
 }
 
-/* Add specific touch interactions for mobile */
-@media (max-width: 768px) {
-  .welcome-layout {
-    flex-direction: column;
-  }
-  
-  .profile-hologram, .welcome-text {
-    max-width: 100%;
-  }
-  
-  .hologram-frame {
-    height: 400px; /* Slightly shorter on mobile */
-  }
-  
-  /* Reset hover effects for touch devices - they'll be handled by JS */
-  .hologram-frame:hover .hologram-overlay {
-    transform: none;
-    opacity: 1;
-  }
-  
-  .hologram-frame:hover .hologram-image {
-    transform: none;
-    filter: none;
-  }
-}
-
-/* Light theme adjustments */
+/* Light Theme Adjustments */
 [data-theme="light"] .hologram-frame {
   background: rgba(245, 249, 252, 0.7);
-  box-shadow: 
-    0 0 15px var(--primary-color),
-    0 0 30px rgba(0, 150, 136, 0.2) inset;
-}
-
-[data-theme="light"] .hologram-frame::before {
-  background: linear-gradient(45deg, 
-    var(--primary-color) 0%, 
-    transparent 20%,
-    transparent 80%,
-    var(--accent-color) 100%);
+  box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(0, 150, 136, 0.2) inset;
 }
 
 [data-theme="light"] .hologram-overlay {
@@ -1403,11 +1381,18 @@ main {
     rgba(38, 166, 154, 0.4) 50%,
     rgba(0, 105, 92, 0.5) 100%
   );
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 -5px 15px rgba(0, 150, 136, 0.3);
 }
 
 [data-theme="light"] .hologram-scan-line {
   background: rgba(0, 150, 136, 0.8);
   box-shadow: 0 0 10px var(--accent-color);
+}
+
+[data-theme="light"] .hologram-overlay::after {
+  background: var(--primary-color);
+  box-shadow: 0 0 20px 5px var(--primary-color);
 }
 
 [data-theme="light"] .hologram-glitch {
@@ -1419,23 +1404,6 @@ main {
   );
 }
 
-[data-theme="light"] .hologram-data {
-  color: white; /* Set to white for better visibility in light theme */
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7); /* Darker shadow for better contrast */
-}
-
-[data-theme="light"] .hologram-title {
-  color: white; /* Ensure the title is white in light theme */
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 137, 123, 0.7); /* Enhanced shadow for readability */
-  font-weight: bold; /* Make the font bolder for better visibility */
-}
-
-[data-theme="light"] .hologram-info {
-  color: white; /* Ensure the info text is white in light theme */
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8); /* Add shadow for readability */
-  font-weight: 500; /* Semi-bold for better visibility */
-}
-
 [data-theme="light"] .hologram-image {
   filter: brightness(1.05) contrast(1.05);
 }
@@ -1444,13 +1412,41 @@ main {
   color: var(--heading-color);
 }
 
+/* Fix for clip-path in Safari */
+@supports (-webkit-backdrop-filter: none) {
+  .hologram-overlay {
+    -webkit-mask-image: -webkit-radial-gradient(white, black); /* Safari fix for border-radius with clip-path */
+  }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .welcome-layout {
+    flex-direction: column;
+  }
+  
+  .profile-hologram, .welcome-text {
+    max-width: 100%;
+  }
+  
+  .hologram-frame {
+    height: 400px;
+  }
+  
+  /* Reset hover effects for touch devices - now handled by JS */
+  .hologram-frame:hover .hologram-overlay {
+    transform: translateY(0);
+  }
+  
+  .hologram-frame.touch-active .hologram-overlay {
+    transform: translateY(-100%);
+  }
+}
+
+/* Animation for scan line */
 @keyframes scan {
-  0% {
-    top: 0%;
-  }
-  100% {
-    top: 100%;
-  }
+  0% { top: 0%; }
+  100% { top: 100%; }
 }
 
 /* ==========================================================================
