@@ -822,11 +822,23 @@ main {
  Hero Section
  ========================================================================== */
 
-.hero {
-  height: 100vh;
+ .hero {
+  height: 80vh;
+  min-height: 500px;
+  padding-top: 80px;
+  box-sizing: border-box;
   position: relative;
-  overflow: hidden;
-  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero .btn {
+  position: relative;
+  margin-top: 20px;
+  transform: none;
+  margin-bottom: 0;
+  display: inline-block;
 }
 
 .hero-slider {
@@ -848,6 +860,9 @@ main {
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   transform: translateY(20px);
   position: relative;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
   z-index: 12;
 }
 
@@ -859,20 +874,24 @@ main {
 .slide h2 {
   max-width: 80%;
   margin: 0 auto 20px;
-  font-size: 3em;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 13;
   pointer-events: auto;
+  text-align: center;
 }
 
 .slide p {
   max-width: 80%;
   margin: 0 auto 30px;
-  font-size: 1.5em;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  margin-bottom: 2rem;
   position: relative;
   z-index: 13;
   pointer-events: auto;
+  text-align: center;
 }
 
 .typing-text {
@@ -1017,13 +1036,17 @@ main {
 
 .slider-dots {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: center;
+  transform: none;
   display: flex;
   gap: 10px;
   z-index: 14;
   pointer-events: auto;
+  
 }
 
 .slider-dot {
@@ -1101,27 +1124,48 @@ main {
  Welcome Section & Hologram Frame
  ========================================================================== */
 
+ /* ==========================================================================
+ Welcome Section & Hologram Frame
+ ========================================================================== */
+
  .welcome-layout {
+  padding: 60px 20px;
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
-  margin: 20px 0;
+  gap: 40px;
+  justify-content: center;
   align-items: center;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.welcome-text h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.welcome-text p {
+  margin-bottom: 15px;
+  line-height: 1.6;
 }
 
 .profile-hologram {
   flex: 1;
   min-width: 300px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .welcome-text {
-  flex: 1.5;
+  flex: 1;
   min-width: 300px;
+  padding: 30px;
 }
 
 .hologram-frame {
   width: 100%;
-  height: 400px;
+  height: 450px;
   position: relative;
   overflow: hidden;
   border-radius: 12px;
@@ -1132,6 +1176,7 @@ main {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform-style: preserve-3d;
   perspective: 1000px;
+  margin: 0 auto;
 }
 
 .hologram-frame::before {
@@ -1185,13 +1230,13 @@ main {
   height: 100%;
   position: relative;
   overflow: hidden;
-  transform: translate3d(0, 0, 0);
 }
 
 .hologram-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top; /* Ensures face isn't cut off */
   display: block;
   transition: transform 0.5s ease, filter 0.5s ease;
 }
@@ -1329,6 +1374,14 @@ main {
 [data-theme="light"] .hologram-title {
   color: #00695C;
   text-shadow: 0 0 10px rgba(0, 137, 123, 0.7);
+}
+
+[data-theme="light"] .hologram-image {
+  filter: brightness(1.05) contrast(1.05);
+}
+
+[data-theme="light"] .welcome-text h2 {
+  color: var(--heading-color);
 }
 
 @keyframes scan {
@@ -3443,11 +3496,12 @@ select:focus {
 }
 
 /* Skip to Content Link for Accessibility */
+/* ==== Improved Accessibility ==== */
 .skip-to-content {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--accent-color);
+  background: var(--primary-color);
   color: #fff;
   padding: 8px 16px;
   z-index: 2001;
