@@ -92,32 +92,6 @@ Feel free to reach out to me for collaboration, opportunities, or just to say hi
 Thank you for visiting my portfolio!
 
 ---
-
-### Steps to Add the README to Your Project
-
-1. **Create the `README.md` File**:
-   - Open your project directory in a text editor (e.g., VS Code) or use PowerShell to create the file.
-   - Using PowerShell:
-     ```powershell
-     cd C:\Users\varos\Vathsaran-Portfolio
-     New-Item -ItemType File -Path README.md
-     ```
-
-2. **Copy the content above and paste it into README.md.**
-
-3. **Add Your Contact Information**:
-   - Replace [Your email address] and [Your LinkedIn profile] with your actual email and LinkedIn profile URL.
-   - If you have other contact methods (e.g., Twitter, personal website), feel free to add them.
-
-4. **Set Up GitHub Pages (Optional)**:
-   - If you haven't deployed your portfolio yet, follow the instructions in the "Live Demo" section to set up GitHub Pages. Once deployed, update the Visit My Portfolio link with the actual URL provided by GitHub Pages.
-
-5. **Commit and Push the README**: Use PowerShell to add, commit, and push the README.md file to your GitHub repository:
-   ```powershell
-   cd C:\Users\varos\Vathsaran-Portfolio
-   git add README.md
-   git commit -m "Add README.md with project overview and setup instructions"
-   git pull origin main  # To avoid conflicts
    git push origin main
    ```
 
