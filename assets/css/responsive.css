@@ -374,6 +374,29 @@
       margin-top: -550px;
   }
 
+  .welcome-layout {
+    flex-direction: column;
+  }
+  
+  .profile-hologram, .welcome-text {
+    max-width: 100%;
+  }
+  
+  .hologram-frame {
+    height: 400px; /* Slightly shorter on mobile */
+  }
+  
+  /* Reset hover effects for touch devices - they'll be handled by JS */
+  .hologram-frame:hover .hologram-overlay {
+    transform: none;
+    opacity: 1;
+  }
+  
+  .hologram-frame:hover .hologram-image {
+    transform: none;
+    filter: none;
+  }
+
   /* Section padding */
   .section {
       padding: 40px 0;

@@ -1517,32 +1517,60 @@ function initMobileChatbot() {
 // Hologram Frame Interactions
 // ==========================================================================
 
+/**
+ * Initializes touch functionality for hologram frames
+ */
 function initHologramFrames() {
-    const frame = document.querySelector('.hologram-frame');
+    const frames = document.querySelectorAll('.hologram-frame');
+    console.log('Found hologram frames:', frames.length); // Debug
     
-    if (frame) {
-      // Add slight rotation on mouse movement (desktop only)
-      frame.addEventListener('mousemove', function(e) {
-        // Check if we're not on mobile
-        if (window.innerWidth > 992) {
-          const rect = this.getBoundingClientRect();
-          const x = e.clientX - rect.left; // x position within the element
-          const y = e.clientY - rect.top;  // y position within the element
-          
-          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
-          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
-          
-          this.style.transform = `perspective(1000px) scale(1.02) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-10px)`;
+    if (!frames.length) return;
+    
+    // Ensure the proper styles are added for z-index interactions
+    document.head.insertAdjacentHTML('beforeend', `
+      <style>
+        /* Fix for interaction issues */
+        #particles-js {
+          pointer-events: none !important;
+        }
+        
+        .welcome-layout, .hologram-frame, .hologram-container {
+          position: relative;
+          z-index: 20;
+          pointer-events: auto !important;
+        }
+        
+        .hologram-overlay {
+          pointer-events: none !important;
+        }
+      </style>
+    `);
+    
+    frames.forEach(frame => {
+      // Mark the frame as initialized to prevent double binding
+      if (frame.dataset.initialized) return;
+      frame.dataset.initialized = 'true';
+      
+      // Clean up any transform applied by particles
+      frame.style.transform = '';
+      
+      // For mobile/touch devices
+      let touchActive = false;
+      
+      // Click for desktop and touch for mobile
+      frame.addEventListener('click', function(e) {
+        console.log('Frame clicked'); // Debug
+        touchActive = !touchActive;
+        
+        if (touchActive) {
+          this.classList.add('touch-active');
+        } else {
+          this.classList.remove('touch-active');
         }
       });
       
-      // Reset on mouse out
-      frame.addEventListener('mouseout', function() {
-        this.style.transform = '';
-      });
-      
       // Add random glitch effect
-      setInterval(() => {
+      const glitchInterval = setInterval(() => {
         if (Math.random() > 0.7) {
           const glitch = frame.querySelector('.hologram-glitch');
           if (glitch) {
@@ -1554,8 +1582,55 @@ function initHologramFrames() {
           }
         }
       }, 2000);
-    }
+      
+      // Add subtle movement on mouse move (for desktop)
+      frame.addEventListener('mousemove', function(e) {
+        // Check if we're not on mobile
+        if (window.innerWidth > 768) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left; // x position within the element
+          const y = e.clientY - rect.top;  // y position within the element
+          
+          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
+          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
+          
+          this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
+        }
+      });
+      
+      // Reset transform on mouse out
+      frame.addEventListener('mouseout', function() {
+        this.style.transform = '';
+      });
+      
+      // Cleanup function for when the component is unmounted
+      return () => {
+        clearInterval(glitchInterval);
+        frame.removeEventListener('mousemove');
+        frame.removeEventListener('mouseout');
+        frame.removeEventListener('click');
+      };
+    });
   }
+  
+  // Make sure this function is called when the DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    initHologramFrames();
+    
+    // Also call it again after a short delay to ensure it works
+    // This helps with frameworks or dynamic content loading
+    setTimeout(initHologramFrames, 1000);
+  });
+  
+  // Optionally reinitialize on window resize
+  window.addEventListener('resize', debounce(function() {
+    initHologramFrames();
+  }, 200));
+  
+  // Make sure this function is called when the DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    initHologramFrames();
+  });
 
 // Ensure the function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', initMobileChatbot);
