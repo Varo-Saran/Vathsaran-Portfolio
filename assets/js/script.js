@@ -1513,11 +1513,54 @@ function initMobileChatbot() {
     setupSafeAreas();
 }
 
+// ==========================================================================
+// Hologram Frame Interactions
+// ==========================================================================
+
+function initHologramFrames() {
+    const frame = document.querySelector('.hologram-frame');
+    
+    if (frame) {
+      // Add slight rotation on mouse movement (desktop only)
+      frame.addEventListener('mousemove', function(e) {
+        // Check if we're not on mobile
+        if (window.innerWidth > 992) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left; // x position within the element
+          const y = e.clientY - rect.top;  // y position within the element
+          
+          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
+          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
+          
+          this.style.transform = `perspective(1000px) scale(1.02) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-10px)`;
+        }
+      });
+      
+      // Reset on mouse out
+      frame.addEventListener('mouseout', function() {
+        this.style.transform = '';
+      });
+      
+      // Add random glitch effect
+      setInterval(() => {
+        if (Math.random() > 0.7) {
+          const glitch = frame.querySelector('.hologram-glitch');
+          if (glitch) {
+            glitch.style.opacity = Math.random() * 0.2;
+            
+            setTimeout(() => {
+              glitch.style.opacity = '1';
+            }, 100 + Math.random() * 200);
+          }
+        }
+      }, 2000);
+    }
+  }
+
 // Ensure the function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', initMobileChatbot);
 
 // Enhanced UI Features for Portfolio Website
-
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize UI enhancements
     initScrollIndicator();
@@ -1530,6 +1573,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initNotificationSystem();
     addSkipToContentLink();
     enhanceNavigation();
+    initHologramFrames();
 });
 
 // Enhanced Navigation Effects

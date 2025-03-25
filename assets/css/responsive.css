@@ -74,6 +74,20 @@
       font-size: 1.1em;
   }
 
+  /* Welcome Section & Hologram Frame adjustments */
+  .welcome-layout {
+    flex-direction: column;
+  }
+  
+  .profile-hologram {
+    width: 100%;
+    height: 350px;
+  }
+  
+  .welcome-text {
+    width: 100%;
+  }
+
   /* Skill category spacing */
   .skill-category {
       margin-bottom: 30px;
@@ -899,6 +913,25 @@
       width: 6px;
       height: 6px;
       margin-top: -400px;
+  }
+
+  /* Welcome Section & Hologram Frame adjustments */
+
+  .hologram-frame {
+    height: 300px;
+  }
+  
+  .hologram-data {
+    bottom: 15px;
+    left: 15px;
+  }
+  
+  .hologram-title {
+    font-size: 1.2rem;
+  }
+  
+  .hologram-info {
+    font-size: 0.7rem;
   }
 
   /* Timeline adjustments */
