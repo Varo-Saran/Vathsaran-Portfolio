@@ -1258,21 +1258,16 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 191, 255, 0.5) 0%,
-    rgba(30, 144, 255, 0.4) 50%,
-    rgba(0, 191, 255, 0.5) 100%
-  );
+  background: linear-gradient(45deg, 
+      rgba(0, 63, 127, 0.6) 0%, 
+      rgba(0, 127, 255, 0.4) 50%, 
+      rgba(0, 63, 127, 0.6) 100%);
   backdrop-filter: blur(2px);
-  transform: translate3d(0, 0, 0);
-  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 5;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s linear 0.1s;
   pointer-events: none;
-  border-radius: 12px;
-  /* Bottom border to show lifting mechanism */
-  border-bottom: 2px solid var(--primary-color);
-  box-shadow: 0 -5px 15px rgba(0, 191, 255, 0.3);
+  z-index: 3;
+  mix-blend-mode: screen;
 }
 
 .hologram-overlay::after {
@@ -1288,9 +1283,13 @@ main {
 }
 
 /* Shutter opens horizontally on hover */
-.hologram-frame:hover .hologram-overlay,
-.hologram-frame.touch-active .hologram-overlay {
-  transform: translateY(-100%);
+.hologram-frame:hover .hologram-overlay {
+  transform: translateX(-100%) rotateY(180deg);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s linear;
+  box-shadow: 0 0 25px rgba(0, 127, 255, 0.4);
+  z-index: 2;
 }
 
 /* Scan Line Effect */

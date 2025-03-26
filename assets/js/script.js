@@ -1580,6 +1580,7 @@ function initHologramFrames() {
       
       // For mobile/touch devices
       let touchActive = false;
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
       
       // Add random scan line animation adjustment
       const scanLine = frame.querySelector('.hologram-scan-line');
@@ -1589,101 +1590,118 @@ function initHologramFrames() {
       }
       
       // Click handler for touch devices
-frame.addEventListener('click', function(e) {
-    console.log('Frame clicked'); 
-    
-    // Toggle active state
-    touchActive = !touchActive;
-    
-    if (touchActive) {
-      this.classList.add('touch-active');
-      
-      // Add lifting sound effect for immersion (optional)
-      const liftSound = new Audio();
-      liftSound.volume = 0.3;
-      try {
-        liftSound.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAASAAAeMwAUFBQUFCIiIiIiIjAwMDAwMD4+Pj4+PkxMTExMTFpaWlpaWmhoaGhoaHZ2dnZ2doSEhISEhJKSkpKSkqCgoKCgoK6urq6urrKysr6+vr6+vsbGxsbGxtDQ0NDQ0N7e3t7e3urq6urq6vLy8vLy8v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/vr6+vr6+v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v/+xDEAAPAAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABP7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+';
-        liftSound.play().catch(e => console.log('Could not play audio effect'));
-      } catch(e) {
-        // Fail silently - audio is optional
+      frame.addEventListener('click', function(e) {
+        console.log('Frame clicked'); 
+        // Toggle active state
+        touchActive = !touchActive;
+        if (touchActive) {
+          this.classList.add('touch-active');
+        } else {
+          this.classList.remove('touch-active');
+        }
+      });
+
+      // Touch-specific functionality
+      if (isTouchDevice) {
+        let isOpen = false;
+        const hologramOverlay = frame.querySelector('.hologram-overlay');
+        
+        if (hologramOverlay) {
+          frame.addEventListener('touchstart', function(event) {
+            event.preventDefault(); // Prevent ghost clicks
+            if (!isOpen) {
+              hologramOverlay.classList.add('shutter-open');
+              isOpen = true;
+            } else {
+              hologramOverlay.classList.remove('shutter-open');
+              isOpen = false;
+            }
+          });
+
+          // Close the shutter if touched outside the hologram frame
+          document.addEventListener('touchstart', function(event) {
+            if (isOpen && !frame.contains(event.target)) {
+              hologramOverlay.classList.remove('shutter-open');
+              isOpen = false;
+            }
+          });
+        } else {
+          console.log('Hologram overlay not found for frame');
+        }
       }
-    } else {
-      this.classList.remove('touch-active');
-    }
-  });
 
-// Add random glitch effect
-const glitchInterval = setInterval(() => {
-  if (Math.random() > 0.7) {
-    const glitch = frame.querySelector('.hologram-glitch');
-    if (glitch) {
-      // Trigger glitch animation
-      glitch.style.animation = 'glitchAnimation 0.3s ease';
-      
-      // Random opacity flicker
-      glitch.style.opacity = Math.random() * 0.3;
-      
-      // Reset after glitch effect
-      setTimeout(() => {
-        glitch.style.animation = '';
-        glitch.style.opacity = '0.7';
-      }, 300 + Math.random() * 200);
-    }
-  }
-}, 3000);
+      // Add random glitch effect
+      const glitchInterval = setInterval(() => {
+        if (Math.random() > 0.7) {
+          const glitch = frame.querySelector('.hologram-glitch');
+          if (glitch) {
+            // Trigger glitch animation
+            glitch.style.animation = 'glitchAnimation 0.3s ease';
+            // Random opacity flicker
+            glitch.style.opacity = Math.random() * 0.3;
+            // Reset after glitch effect
+            setTimeout(() => {
+              glitch.style.animation = '';
+              glitch.style.opacity = '0.7';
+            }, 300 + Math.random() * 200);
+          }
+        }
+      }, 3000);
 
-// Add subtle 3D effect on mouse move (for desktop only)
-frame.addEventListener('mousemove', function(e) {
-  // Check if we're not on mobile
-  if (window.innerWidth > 768) {
-    const rect = this.getBoundingClientRect();
-    const x = e.clientX - rect.left; // x position within the element
-    const y = e.clientY - rect.top;  // y position within the element
-    
-    // Calculate rotation based on mouse position
-    const xRotation = 5 * ((y - rect.height / 2) / rect.height);
-    const yRotation = -5 * ((x - rect.width / 2) / rect.width);
-    
-    // Apply subtle 3D rotation effect
-    this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
-    
-    // Adjust the overlay lifting based on mouse Y position
-    const overlay = this.querySelector('.hologram-overlay');
-    if (overlay && !this.classList.contains('touch-active')) {
-      // Calculate lift progress based on mouse Y position
-      const progressY = Math.min(100, Math.max(0, ((rect.height - y) / rect.height) * 120));
-      overlay.style.transform = `translateY(-${progressY}%)`;
-    }
-  }
-});
+      // Add subtle 3D effect on mouse move (for desktop only)
+      frame.addEventListener('mousemove', function(e) {
+        // Check if we're not on mobile
+        if (window.innerWidth > 768) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left; // x position within the element
+          const y = e.clientY - rect.top;  // y position within the element
+          
+          // Calculate rotation based on mouse position
+          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
+          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
+          
+          // Apply subtle 3D rotation effect
+          this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
+          
+          // Adjust the overlay lifting based on mouse Y position
+          const overlay = this.querySelector('.hologram-overlay');
+          if (overlay && !this.classList.contains('touch-active')) {
+            // Calculate lift progress based on mouse Y position
+            const progressY = Math.min(100, Math.max(0, ((rect.height - y) / rect.height) * 120));
+            overlay.style.transform = `translateY(-${progressY}%)`;
+          }
+        }
+      });
 
-// Reset transform and overlay on mouse out
-frame.addEventListener('mouseout', function() {
-  this.style.transform = '';
-  
-  // Reset overlay if not in touch-active state
-  if (!this.classList.contains('touch-active')) {
-    const overlay = this.querySelector('.hologram-overlay');
-    if (overlay) {
-      overlay.style.transform = '';
-    }
-  }
-});
+      // Reset transform and overlay on mouse out
+      frame.addEventListener('mouseout', function() {
+        this.style.transform = '';
+        // Reset overlay if not in touch-active state
+        if (!this.classList.contains('touch-active')) {
+          const overlay = this.querySelector('.hologram-overlay');
+          if (overlay) {
+            overlay.style.transform = '';
+          }
+        }
+      });
 
-// Cleanup function for when the component is unmounted
-return () => {
-  clearInterval(glitchInterval);
-  frame.removeEventListener('mousemove');
-  frame.removeEventListener('mouseout');
-  frame.removeEventListener('click');
-};
-});
+      // Cleanup function for when the component is unmounted
+      return () => {
+        clearInterval(glitchInterval);
+        frame.removeEventListener('mousemove');
+        frame.removeEventListener('mouseout');
+        frame.removeEventListener('click');
+        if (isTouchDevice) {
+          frame.removeEventListener('touchstart');
+          document.removeEventListener('touchstart');
+        }
+      };
+    });
 }
 
 // Ensure the function runs when the DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   initHologramFrames();
-  
   // Also call it after a short delay to ensure it works with dynamic content
   setTimeout(initHologramFrames, 1000);
 });
@@ -1692,11 +1710,11 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('resize', function() {
   setTimeout(initHologramFrames, 200);
 });
-  
-  // Make sure this function is called when the DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
-    initHologramFrames();
-  });
+
+// Make sure this function is called when the DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  initHologramFrames();
+});
 
 // Ensure the function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', initMobileChatbot);

@@ -2204,3 +2204,10 @@ nav {
       width: auto;
   }
 }
+
+@media (hover: none) {
+    .hologram-overlay {
+        opacity: 0.3 !important;
+        transform: translateX(-30%) !important;
+    }
+}
