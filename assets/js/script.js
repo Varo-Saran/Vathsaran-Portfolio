@@ -1558,194 +1558,399 @@ function initLogoEffects() {
 /**
  * Enhanced initialization for hologram frames with bottom-to-top lifting effect
  */
+/**
+ * Initializes hologram frames with visual effects while preserving interaction with other elements
+ */
 function initHologramFrames() {
     const frames = document.querySelectorAll('.hologram-frame');
-    console.log('Found hologram frames:', frames.length);
     
     if (!frames.length) return;
     
-    // Add CSS for touch-device handling
-    document.head.insertAdjacentHTML('beforeend', `
-      <style>
-        /* Fix for interaction issues */
-        #particles-js {
-          pointer-events: none !important;
-        }
-        
-        .welcome-layout, .hologram-frame, .hologram-container {
-          position: relative;
-          z-index: 20;
-          pointer-events: auto !important;
-        }
-        
-        /* Ensure the hologram effects are visible during transition */
-        .hologram-overlay {
-          pointer-events: none !important;
-        }
-        
-        /* Enhanced hover/active state for hologram frame */
-        .hologram-frame.touch-active {
-          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
-                      0 0 30px var(--primary-color), 
-                      0 0 40px rgba(0, 191, 255, 0.3) inset;
-          transform: translateY(-10px) scale(1.02);
-        }
-        
-        /* Random glitch animation */
-        @keyframes glitchAnimation {
-          0% { opacity: 1; }
-          10% { opacity: 0.8; transform: translate(-2px, 1px); }
-          20% { opacity: 1; transform: translate(0); }
-          30% { opacity: 1; }
-          35% { opacity: 0.9; transform: translate(1px, -1px); }
-          40% { opacity: 1; transform: translate(0); }
-          100% { opacity: 1; }
-        }
-      </style>
-    `);
+    // Add CSS for hologram effects without breaking other interactions
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      /* Fix z-index stacking without breaking interactions */
+      .hologram-frame {
+        position: relative;
+        z-index: 5;
+        pointer-events: auto;
+      }
+      
+      /* Ensure overlays don't block clicks */
+      .hologram-overlay {
+        pointer-events: none !important;
+      }
+      
+      /* Enhanced hover/active state */
+      .hologram-frame.touch-active {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
+                    0 0 30px var(--primary-color), 
+                    0 0 40px rgba(0, 191, 255, 0.3) inset;
+        transform: translateY(-10px) scale(1.02);
+      }
+      
+      /* Random glitch animation */
+      @keyframes glitchAnimation {
+        0% { opacity: 1; }
+        10% { opacity: 0.8; transform: translate(-2px, 1px); }
+        20% { opacity: 1; transform: translate(0); }
+        30% { opacity: 1; }
+        35% { opacity: 0.9; transform: translate(1px, -1px); }
+        40% { opacity: 1; transform: translate(0); }
+        100% { opacity: 1; }
+      }
+      
+      /* Fix chatbot interaction issues */
+      #chatbot {
+        z-index: 2000 !important;
+        pointer-events: auto !important;
+      }
+      
+      #chatbot .chat-header,
+      #chatbot .chat-messages,
+      #chatbot .chat-input {
+        z-index: 2001 !important;
+        pointer-events: auto !important;
+      }
+      
+      #chatbot input,
+      #chatbot button {
+        z-index: 2002 !important;
+        pointer-events: auto !important;
+      }
+      
+      #closeChatbot {
+        z-index: 2003 !important;
+        pointer-events: auto !important;
+      }
+      
+      /* Ensure chatbot takes precedence over particles */
+      #particles-js {
+        z-index: 1 !important;
+      }
+    `;
+    
+    // Check if style already exists to prevent duplicates
+    const existingStyle = document.querySelector('style[data-hologram-styles]');
+    if (!existingStyle) {
+      styleElement.setAttribute('data-hologram-styles', 'true');
+      document.head.appendChild(styleElement);
+    }
     
     frames.forEach(frame => {
-      // Mark the frame as initialized to prevent double binding
-      if (frame.dataset.initialized) return;
+      // Skip already initialized frames
+      if (frame.dataset.initialized === 'true') return;
       frame.dataset.initialized = 'true';
       
-      // Clean up any transform applied by particles
+      // Reset any transform that might have been applied
       frame.style.transform = '';
       
-      // For mobile/touch devices
-      let touchActive = false;
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+      const isTouchDevice = 'ontouchstart' in window || 
+                            navigator.maxTouchPoints > 0 || 
+                            navigator.msMaxTouchPoints > 0;
       
-      // Add random scan line animation adjustment
+      // Find and adjust the scan line animation
       const scanLine = frame.querySelector('.hologram-scan-line');
       if (scanLine) {
-        // Randomize animation delay for more realistic effect
         scanLine.style.animationDelay = `${Math.random() * -2}s`;
       }
       
-      // Click handler for touch devices
-      frame.addEventListener('click', function(e) {
-        console.log('Frame clicked'); 
-        // Toggle active state
-        touchActive = !touchActive;
-        if (touchActive) {
-          this.classList.add('touch-active');
-        } else {
-          this.classList.remove('touch-active');
-        }
-      });
-
-      // Touch-specific functionality
-      if (isTouchDevice) {
-        let isOpen = false;
-        const hologramOverlay = frame.querySelector('.hologram-overlay');
+      // Add click handler using event delegation approach
+      // This prevents excessive event listeners
+      if (!frame._clickHandlerAdded) {
+        frame._clickHandlerAdded = true;
         
-        if (hologramOverlay) {
-          frame.addEventListener('touchstart', function(event) {
-            event.preventDefault(); // Prevent ghost clicks
-            if (!isOpen) {
-              hologramOverlay.classList.add('shutter-open');
-              isOpen = true;
-            } else {
-              hologramOverlay.classList.remove('shutter-open');
-              isOpen = false;
-            }
-          });
-
-          // Close the shutter if touched outside the hologram frame
-          document.addEventListener('touchstart', function(event) {
-            if (isOpen && !frame.contains(event.target)) {
-              hologramOverlay.classList.remove('shutter-open');
-              isOpen = false;
-            }
-          });
-        } else {
-          console.log('Hologram overlay not found for frame');
-        }
-      }
-
-      // Add random glitch effect with Anime.js
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-            const glitch = frame.querySelector('.hologram-glitch');
-            if (glitch) {
-                anime({
-                targets: glitch,
-                opacity: [0.7, 0.3, 0.8, 0.5],
-                translateX: [-2, 2, -1, 0],
-                translateY: [1, -1, 0, 1],
-                duration: 400,
-                easing: 'easeInOutQuad',
-                complete: () => {
-                    glitch.style.opacity = '0.7'; // Reset
-                }
-                });
-            }
-            }
-        }, 3000);
-
-      // Add subtle 3D effect on mouse move (for desktop only)
-      frame.addEventListener('mousemove', function(e) {
-        // Check if we're not on mobile
-        if (window.innerWidth > 768) {
-          const rect = this.getBoundingClientRect();
-          const x = e.clientX - rect.left; // x position within the element
-          const y = e.clientY - rect.top;  // y position within the element
+        frame.addEventListener('click', function(e) {
+          const wasActive = this.classList.contains('touch-active');
+          this.classList.toggle('touch-active');
           
-          // Calculate rotation based on mouse position
-          const xRotation = 5 * ((y - rect.height / 2) / rect.height);
-          const yRotation = -5 * ((x - rect.width / 2) / rect.width);
-          
-          // Apply subtle 3D rotation effect
-          this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
-          
-          // Adjust the overlay lifting based on mouse Y position
-          const overlay = this.querySelector('.hologram-overlay');
-          if (overlay && !this.classList.contains('touch-active')) {
-            // Calculate lift progress based on mouse Y position
-            const progressY = Math.min(100, Math.max(0, ((rect.height - y) / rect.height) * 120));
-            overlay.style.transform = `translateY(-${progressY}%)`;
-          }
-        }
-      });
-
-      // Reset transform and overlay on mouse out
-      frame.addEventListener('mouseout', function() {
-        this.style.transform = '';
-        // Reset overlay if not in touch-active state
-        if (!this.classList.contains('touch-active')) {
+          // Also toggle the overlay for visual effect
           const overlay = this.querySelector('.hologram-overlay');
           if (overlay) {
-            overlay.style.transform = '';
+            if (wasActive) {
+              overlay.style.transform = '';
+            } else {
+              overlay.style.transform = 'translateY(-100%)';
+            }
           }
+        });
+      }
+      
+      // Touch-specific functionality - use passive listeners for better performance
+      if (isTouchDevice) {
+        const hologramOverlay = frame.querySelector('.hologram-overlay');
+        
+        if (hologramOverlay && !frame._touchHandlerAdded) {
+          frame._touchHandlerAdded = true;
+          
+          // Use touchend instead of touchstart for better mobile experience
+          frame.addEventListener('touchend', function(event) {
+            // Don't prevent default here to allow scrolling
+            const isActive = this.classList.contains('touch-active');
+            
+            if (!isActive) {
+              hologramOverlay.style.transform = 'translateY(-100%)';
+              this.classList.add('touch-active');
+            } else {
+              hologramOverlay.style.transform = '';
+              this.classList.remove('touch-active');
+            }
+          }, { passive: true });
         }
-      });
-
-      // Cleanup function for when the component is unmounted
-      return () => {
-        clearInterval(glitchInterval);
-        frame.removeEventListener('mousemove');
-        frame.removeEventListener('mouseout');
-        frame.removeEventListener('click');
-        if (isTouchDevice) {
-          frame.removeEventListener('touchstart');
-          document.removeEventListener('touchstart');
+      }
+      
+      // Add subtle 3D effect on mouse move (for desktop only)
+      // Use a more efficient approach with throttling
+      if (!frame._mouseMoveHandlerAdded && window.innerWidth > 768) {
+        frame._mouseMoveHandlerAdded = true;
+        
+        let ticking = false;
+        
+        frame.addEventListener('mousemove', function(e) {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              const rect = this.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              
+              // Calculate rotation based on mouse position
+              const xRotation = 5 * ((y - rect.height / 2) / rect.height);
+              const yRotation = -5 * ((x - rect.width / 2) / rect.width);
+              
+              // Apply subtle 3D rotation effect
+              this.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
+              
+              // Adjust overlay animation based on mouse position
+              const overlay = this.querySelector('.hologram-overlay');
+              if (overlay && !this.classList.contains('touch-active')) {
+                const progressY = Math.min(100, Math.max(0, ((rect.height - y) / rect.height) * 120));
+                overlay.style.transform = `translateY(-${progressY}%)`;
+              }
+              
+              ticking = false;
+            });
+            
+            ticking = true;
+          }
+        }, { passive: true });
+        
+        // Reset transform and overlay on mouse out
+        frame.addEventListener('mouseleave', function() {
+          this.style.transform = '';
+          
+          // Reset overlay if not in touch-active state
+          if (!this.classList.contains('touch-active')) {
+            const overlay = this.querySelector('.hologram-overlay');
+            if (overlay) {
+              overlay.style.transform = '';
+            }
+          }
+        }, { passive: true });
+      }
+      
+      // Add random glitch effect without using external libraries
+      // This prevents potential conflicts
+      if (!frame._glitchIntervalAdded) {
+        frame._glitchIntervalAdded = true;
+        
+        const glitchElement = frame.querySelector('.hologram-glitch');
+        if (glitchElement) {
+          // Use a more efficient setInterval approach
+          const glitchInterval = setInterval(() => {
+            if (Math.random() > 0.7) {
+              // Apply random glitch effect
+              glitchElement.style.opacity = '0.3';
+              glitchElement.style.transform = 'translate(-2px, 1px)';
+              
+              // Reset after animation
+              setTimeout(() => {
+                glitchElement.style.opacity = '0.7';
+                glitchElement.style.transform = '';
+              }, 400);
+            }
+          }, 3000);
+          
+          // Store interval ID for potential cleanup
+          frame._glitchInterval = glitchInterval;
         }
-      };
+      }
     });
-}
-
-// Ensure the function runs when the DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-  initHologramFrames();
-  // Also call it after a short delay to ensure it works with dynamic content
-  setTimeout(initHologramFrames, 1000);
-});
-
-// Re-initialize on window resize to handle orientation changes
-window.addEventListener('resize', function() {
-  setTimeout(initHologramFrames, 200);
-});
+  
+    // Make sure particles are behind content but still interactive
+    const particlesElement = document.getElementById('particles-js');
+    if (particlesElement) {
+      particlesElement.style.zIndex = '1';
+      // Allow interaction with particles but ensure they don't block other elements
+      particlesElement.style.pointerEvents = 'auto';
+    }
+    
+    // Ensure chatbot and buttons have proper z-index and pointer-events
+    const chatbotToggle = document.getElementById('chatbotToggle');
+    const chatbot = document.getElementById('chatbot');
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+    if (chatbotToggle) {
+      chatbotToggle.style.zIndex = '1000';
+      chatbotToggle.style.position = 'fixed';
+      chatbotToggle.style.pointerEvents = 'auto';
+    }
+    
+    if (chatbot) {
+      // Make sure the chatbot has an even higher z-index than the toggle button
+      chatbot.style.zIndex = '2000';
+      chatbot.style.pointerEvents = 'auto';
+      
+      // Ensure all chatbot children are interactive
+      const chatElements = chatbot.querySelectorAll('*');
+      chatElements.forEach(el => {
+        el.style.pointerEvents = 'auto';
+      });
+      
+      // Make sure the chat input area is fully interactive
+      const chatInput = chatbot.querySelector('.chat-input');
+      const chatMessages = chatbot.querySelector('.chat-messages');
+      const chatHeader = chatbot.querySelector('.chat-header');
+      
+      if (chatInput) {
+        chatInput.style.zIndex = '2001';
+        chatInput.style.pointerEvents = 'auto';
+        
+        // Ensure the input and button are interactive
+        const inputField = chatInput.querySelector('input');
+        const sendButton = chatInput.querySelector('button');
+        
+        if (inputField) {
+          inputField.style.pointerEvents = 'auto';
+        }
+        
+        if (sendButton) {
+          sendButton.style.pointerEvents = 'auto';
+        }
+      }
+      
+      if (chatMessages) {
+        chatMessages.style.zIndex = '2001';
+        chatMessages.style.pointerEvents = 'auto';
+      }
+      
+      if (chatHeader) {
+        chatHeader.style.zIndex = '2001';
+        chatHeader.style.pointerEvents = 'auto';
+        
+        const closeButton = chatHeader.querySelector('button');
+        if (closeButton) {
+          closeButton.style.zIndex = '2002';
+          closeButton.style.pointerEvents = 'auto';
+        }
+      }
+    }
+    
+    if (scrollToTopBtn) {
+      scrollToTopBtn.style.zIndex = '1000';
+      scrollToTopBtn.style.position = 'fixed';
+      scrollToTopBtn.style.pointerEvents = 'auto';
+    }
+  }
+  
+  // Clean up function to prevent memory leaks
+  function cleanupHologramFrames() {
+    const frames = document.querySelectorAll('.hologram-frame');
+    
+    frames.forEach(frame => {
+      // Clear any intervals to prevent memory leaks
+      if (frame._glitchInterval) {
+        clearInterval(frame._glitchInterval);
+        frame._glitchInterval = null;
+      }
+    });
+  }
+  
+  // Add this cleanup on page unload
+  window.addEventListener('beforeunload', cleanupHologramFrames);
+  
+  // If the document is already loaded, initialize immediately
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initHologramFrames();
+  } else {
+    // Otherwise wait for the DOM to be ready
+    document.addEventListener('DOMContentLoaded', initHologramFrames);
+  }
+  
+  // Re-initialize on window resize to handle orientation changes
+  window.addEventListener('resize', function() {
+    // Debounce the resize event
+    clearTimeout(this._resizeTimer);
+    this._resizeTimer = setTimeout(initHologramFrames, 200);
+  });
+  
+  // Add special handling for chatbot interactions
+  function fixChatbotInteractions() {
+    const chatbot = document.getElementById('chatbot');
+    const chatbotToggle = document.getElementById('chatbotToggle');
+    
+    if (!chatbot || !chatbotToggle) return;
+    
+    // Fix chatbot toggle button click handler
+    if (!chatbotToggle._fixedClickHandler) {
+      const originalClickHandler = chatbotToggle.onclick;
+      
+      chatbotToggle.onclick = function(e) {
+        // Call the original handler if it exists
+        if (originalClickHandler) {
+          originalClickHandler.call(this, e);
+        }
+        
+        // Make sure chatbot is fully interactive when opened
+        setTimeout(() => {
+          chatbot.style.zIndex = '2000';
+          chatbot.style.pointerEvents = 'auto';
+          
+          const chatElements = chatbot.querySelectorAll('*');
+          chatElements.forEach(el => {
+            el.style.pointerEvents = 'auto';
+          });
+        }, 100);
+      };
+      
+      chatbotToggle._fixedClickHandler = true;
+    }
+    
+    // Ensure chat input is always interactive
+    const userInput = document.getElementById('userInput');
+    const sendMessageBtn = document.getElementById('sendMessage');
+    
+    if (userInput) {
+      userInput.style.pointerEvents = 'auto';
+      userInput.style.zIndex = '2002';
+      
+      // Add focus events to ensure chatbot stays interactive
+      userInput.addEventListener('focus', function() {
+        chatbot.style.zIndex = '2000';
+        this.style.zIndex = '2002';
+      });
+    }
+    
+    if (sendMessageBtn) {
+      sendMessageBtn.style.pointerEvents = 'auto';
+      sendMessageBtn.style.zIndex = '2002';
+    }
+    
+    // Fix close button interaction
+    const closeChatbotBtn = document.getElementById('closeChatbot');
+    if (closeChatbotBtn) {
+      closeChatbotBtn.style.pointerEvents = 'auto';
+      closeChatbotBtn.style.zIndex = '2003';
+    }
+  }
+  
+  // Call this function when document is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    initHologramFrames();
+    fixChatbotInteractions();
+  });
+  
+  // Also fix the chatbot after the page is fully loaded
+  window.addEventListener('load', fixChatbotInteractions);
 
 // Make sure this function is called when the DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
