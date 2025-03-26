@@ -1513,6 +1513,41 @@ function initMobileChatbot() {
     setupSafeAreas();
 }
 
+function initLogoEffects() {
+    const logo = document.querySelector('.logo');
+    if (!logo) return;
+  
+    // Typing Effect
+    const text = logo.getAttribute('data-text');
+    logo.textContent = ''; // Clear initial text
+    let i = 0;
+    function type() {
+      if (i < text.length) {
+        logo.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, 100); // Typing speed
+      }
+    }
+    type();
+  
+    // Glitch Effect
+    setInterval(() => {
+      if (Math.random() > 0.8) {
+        anime({
+          targets: logo,
+          opacity: [1, 0.7, 1],
+          translateX: [-2, 2, 0],
+          translateY: [1, -1, 0],
+          duration: 300,
+          easing: 'easeInOutQuad'
+        });
+      }
+    }, 4000);
+  }
+  
+  // Run it on DOM load
+  document.addEventListener('DOMContentLoaded', initLogoEffects);
+
 // ==========================================================================
 // Hologram Frame Interactions
 // ==========================================================================
@@ -1522,7 +1557,6 @@ function initMobileChatbot() {
  */
 /**
  * Enhanced initialization for hologram frames with bottom-to-top lifting effect
- * Replace your existing initHologramFrames function with this one
  */
 function initHologramFrames() {
     const frames = document.querySelectorAll('.hologram-frame');
