@@ -1630,23 +1630,25 @@ function initHologramFrames() {
         }
       }
 
-      // Add random glitch effect
-      const glitchInterval = setInterval(() => {
-        if (Math.random() > 0.7) {
-          const glitch = frame.querySelector('.hologram-glitch');
-          if (glitch) {
-            // Trigger glitch animation
-            glitch.style.animation = 'glitchAnimation 0.3s ease';
-            // Random opacity flicker
-            glitch.style.opacity = Math.random() * 0.3;
-            // Reset after glitch effect
-            setTimeout(() => {
-              glitch.style.animation = '';
-              glitch.style.opacity = '0.7';
-            }, 300 + Math.random() * 200);
-          }
-        }
-      }, 3000);
+      // Add random glitch effect with Anime.js
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+            const glitch = frame.querySelector('.hologram-glitch');
+            if (glitch) {
+                anime({
+                targets: glitch,
+                opacity: [0.7, 0.3, 0.8, 0.5],
+                translateX: [-2, 2, -1, 0],
+                translateY: [1, -1, 0, 1],
+                duration: 400,
+                easing: 'easeInOutQuad',
+                complete: () => {
+                    glitch.style.opacity = '0.7'; // Reset
+                }
+                });
+            }
+            }
+        }, 3000);
 
       // Add subtle 3D effect on mouse move (for desktop only)
       frame.addEventListener('mousemove', function(e) {
